@@ -37,4 +37,5 @@
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
     <string name="slogan">Wise Your Life</string>
+    <string name="account_examine">Account Error</string>
 </resources>

@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
     };
 
     private List<String> mRequestPermission = new ArrayList<>();
+    private UserViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
     private void startActivity(){
-        UserViewModel viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
+        viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
         User user=viewModel.loadUser(SharedPreferencesUtil.getAccount(this));
         new Handler().postDelayed(() -> {
             if (user==null){
@@ -112,14 +113,13 @@ public class SplashActivity extends AppCompatActivity {
                                         public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                                             try {
                                                 JSONObject jsonObject1=new JSONObject(response.body());
-                                                if (jsonObject1.getBoolean("flag")) {
-                                                    user.setCommunityName(jsonObject1.getString("communityName"));
-                                                    user.setBuildingName(jsonObject1.getString("buildingName"));
-                                                    user.setDoorNum(jsonObject1.getString("num"));
-                                                    user.setIdNum(jsonObject1.getString("idnumber"));
-                                                    user.setStatus(jsonObject1.getInt("status"));
-                                                    viewModel.update(user);
-                                                }
+                                                user.setName(jsonObject1.getString("name"));
+                                                user.setCommunityName(jsonObject1.getString("communityName"));
+                                                user.setBuildingName(jsonObject1.getString("buildingName"));
+                                                user.setDoorNum(jsonObject1.getString("num"));
+                                                user.setIdNum(jsonObject1.getString("idnumber"));
+                                                user.setStatus(jsonObject1.getInt("status"));
+                                                viewModel.update(user);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }

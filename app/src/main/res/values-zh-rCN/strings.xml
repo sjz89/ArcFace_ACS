@@ -37,4 +37,5 @@
     <string name="minute">分</string>
     <string name="new_password">新密码</string>
     <string name="slogan">智慧你的生活</string>
+    <string name="account_examine">账号尚未通过审核</string>
 </resources>

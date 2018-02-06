@@ -53,7 +53,7 @@ public interface HttpApi {
 
     @POST("visitor/regist")
     @FormUrlEncoded
-    Call<String> faceRegister(@Field("oid")String oid,@Field("name") String name,@Field("relationType") String type,
+    Call<String> faceRegister(@Field("phone")String phone,@Field("name") String name,@Field("relationType") String type,
                               @Field("idnumber") String idnumber,@Field("allowBegin") String begin,@Field("allowEnd") String end,
                               @Field("ids") int[] ids);
 }

@@ -20,8 +20,10 @@ public class Face {
     private String account;
     private byte[] faceData;
     private String name;
+    private String idNum;
     private String type;
-    private String validDate;
+    private String startDate;
+    private String endDate;
 
     public void setFaceData(byte[] faceData) {
         this.faceData = faceData;
@@ -29,6 +31,14 @@ public class Face {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIdNum() {
+        return idNum;
+    }
+
+    public void setIdNum(String idNum) {
+        this.idNum = idNum;
     }
 
     public void setId(Long id) {
@@ -59,15 +69,23 @@ public class Face {
         return type;
     }
 
-    public String getValidDate() {
-        return validDate;
+    public String getStartDate() {
+        return startDate;
     }
 
     public void setType(String type) {
         this.type = type;
     }
 
-    public void setValidDate(String validDate) {
-        this.validDate = validDate;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

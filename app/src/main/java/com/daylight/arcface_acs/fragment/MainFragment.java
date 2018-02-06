@@ -39,26 +39,27 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         UserViewModel viewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
         user= viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
-        if (user.getStatus()==Values.EXAMINE){
-            QMUIDialog mDialog=new QMUIDialog.MessageDialogBuilder(getBaseFragmentActivity())
-                    .setTitle("提示")
-                    .setMessage("您的账号还未被物业审核通过，请先完善信息或者耐心等待。如有问题，请联系物业。")
-                    .addAction(new QMUIDialogAction(getContext(), "退出", (dialog, index) -> {
-                        dialog.dismiss();
-                        popBackStack();
-                    }))
-                    .addAction(new QMUIDialogAction(getContext(),"完善信息",((dialog, index) -> {
-                        startFragment(new InfoFragment());
-                        dialog.dismiss();
-                    })))
-                    .create();
-            mDialog.setCancelable(false);
-            mDialog.setCanceledOnTouchOutside(false);
-            mDialog.show();
-        }
+
         viewModel.getUser().observe(getBaseFragmentActivity(),user1 -> {
             if (user1!=null) {
                 user = user1;
+                if (user.getStatus()==Values.UNREGISTER){
+                    QMUIDialog mDialog=new QMUIDialog.MessageDialogBuilder(getBaseFragmentActivity())
+                            .setTitle("提示")
+                            .setMessage("您的账号还未被完善信息，请先去完善信息")
+                            .addAction(new QMUIDialogAction(getContext(), "退出", (dialog, index) -> {
+                                dialog.dismiss();
+                                popBackStack();
+                            }))
+                            .addAction(new QMUIDialogAction(getContext(),"完善信息",((dialog, index) -> {
+                                startFragment(new InfoFragment());
+                                dialog.dismiss();
+                            })))
+                            .create();
+                    mDialog.setCancelable(false);
+                    mDialog.setCanceledOnTouchOutside(false);
+                    mDialog.show();
+                }
             }
         });
     }

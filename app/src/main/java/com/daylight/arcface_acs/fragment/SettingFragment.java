@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.dialog.ChangePasswordDialogBuilder;
 import com.daylight.arcface_acs.viewmodel.FaceViewModel;
 import com.daylight.arcface_acs.viewmodel.UserViewModel;
@@ -39,6 +40,7 @@ public class SettingFragment extends BaseFragment{
     private FaceViewModel faceViewModel;
     private User user;
     private QMUICommonListItemView info;
+    private QMUITopBarLayout topBar;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,7 @@ public class SettingFragment extends BaseFragment{
     }
 
     private void initTopBar(){
-        QMUITopBarLayout topBar=view.findViewById(R.id.topbar_setting);
+        topBar=view.findViewById(R.id.topbar_setting);
         topBar.setTitle(R.string.title_setting);
     }
 
@@ -227,6 +229,13 @@ public class SettingFragment extends BaseFragment{
         viewModel.getUser().observe(this, user -> {
             if (user!=null) {
                 this.user=user;
+                if (user.getStatus()== Values.EXAMINE){
+                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.grapefruit));
+                    topBar.setSubTitle(R.string.account_examine);
+                }else{
+                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.app_color_blue_2));
+                    topBar.setSubTitle(null);
+                }
                 if (user.getPin() == null)
                     pinPassword.setText("设置开门密码");
                 else

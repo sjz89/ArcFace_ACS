@@ -26,5 +26,6 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:qmui_topbar_bg_color="@color/app_color_blue_2"
-        app:qmui_topbar_title_color="@color/white" />
+        app:qmui_topbar_title_color="@color/white"
+        app:qmui_topbar_subtitle_color="@color/white" />
 </com.qmuiteam.qmui.widget.QMUIWindowInsetLayout>

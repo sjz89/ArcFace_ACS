@@ -24,14 +24,17 @@ import java.util.Locale;
 public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
     private Context context;
     private View view;
-    private EditText editText;
+    private EditText editName;
+    private EditText editIdNum;
     private byte[] imageData;
     private String[] types;
     private int choice;
-    private String date;
-    private QMUICommonListItemView validDate;
+    private String startTime,endTime;
+    private QMUICommonListItemView startDate;
+    private QMUICommonListItemView endDate;
     private TimePickerView pickerView;
-    private Calendar selectDate;
+    private Calendar selectStartDate;
+    private Calendar selectEndDate;
 
     public NewFaceDialogBuilder(Context context) {
         super(context);
@@ -53,11 +56,19 @@ public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
         InfoItemView headView=new InfoItemView(context, imageData);
         QMUICommonListItemView name=listView.createItemView("名字");
         name.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
-        name.addAccessoryCustomView(editText);
+        name.addAccessoryCustomView(editName);
+        QMUICommonListItemView idNum=listView.createItemView("身份证号");
+        idNum.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
+        idNum.addAccessoryCustomView(editIdNum);
         QMUICommonListItemView type=listView.createItemView("类型");
         type.setDetailText(types[choice]);
         type.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
-        validDate=listView.createItemView("有效期");
+
+        startDate=listView.createItemView("起始日期");
+        endDate=listView.createItemView("终止日期");
+
+        Calendar beginDate = Calendar.getInstance();
+        beginDate.setTime(new Date());
 
         View.OnClickListener listener= v -> {
             if (v instanceof QMUICommonListItemView){
@@ -70,21 +81,37 @@ public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
                                     if (which==0){
                                         choice=0;
                                         listView.hideItemView(0,3);
+                                        listView.hideItemView(0,4);
                                     }else{
                                         choice=1;
                                         listView.showItemView(0,3);
+                                        listView.showItemView(0,4);
                                     }
                                     type.setDetailText(types[choice]);
                                     dialog.dismiss();
                                 })).show();
                         break;
-                    case "有效期":
-                        initDatePicker();
-                        if (!validDate.getDetailText().toString().equals("")){
-                            String[] times=validDate.getDetailText().toString().split("-");
-                            selectDate=Calendar.getInstance();
-                            selectDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
-                            pickerView.setDate(selectDate);
+                    case "起始日期":
+                        initDatePicker(beginDate,true);
+                        if (!startDate.getDetailText().toString().equals("")){
+                            String[] times= startDate.getDetailText().toString().split("-");
+                            selectStartDate =Calendar.getInstance();
+                            selectStartDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                            pickerView.setDate(selectStartDate);
+                        }
+                        pickerView.show();
+                        break;
+                    case "终止日期":
+                        if (!startDate.getDetailText().toString().equals("")){
+                            String[] times= startDate.getDetailText().toString().split("-");
+                            beginDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                        }
+                        initDatePicker(beginDate,false);
+                        if (!endDate.getDetailText().toString().equals("")){
+                            String[] times= endDate.getDetailText().toString().split("-");
+                            selectEndDate =Calendar.getInstance();
+                            selectEndDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                            pickerView.setDate(selectStartDate);
                         }
                         pickerView.show();
                         break;
@@ -96,41 +123,50 @@ public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
                 .addItemView(headView,null)
                 .addItemView(name,null)
                 .addItemView(type,listener)
-                .addItemView(validDate,listener)
+                .addItemView(startDate,listener)
+                .addItemView(endDate,listener)
                 .addTo(listView);
         listView.hideItemView(0,3);
+        listView.hideItemView(0,4);
     }
 
     private void initCustomView(){
-        editText=new EditText(context);
-        editText.setWidth(QMUIDisplayHelper.dp2px(context,120));
-        editText.setGravity(Gravity.END);
-        editText.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+        editName =new EditText(context);
+        editName.setWidth(QMUIDisplayHelper.dp2px(context,120));
+        editName.setGravity(Gravity.END);
+        editName.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+
+        editIdNum =new EditText(context);
+        editIdNum.setWidth(QMUIDisplayHelper.dp2px(context,180));
+        editIdNum.setGravity(Gravity.END);
+        editIdNum.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+
     }
 
-    private void initDatePicker() {
-        if (pickerView==null) {
-            Calendar startDate = Calendar.getInstance();
-            startDate.setTime(new Date());
-            Calendar endDate = Calendar.getInstance();
-            endDate.set(2028, 11, 31);
+    private void initDatePicker(Calendar beginDate,boolean startOrEnd) {
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(2028, 11, 31);
 
-            pickerView = new TimePickerView.Builder(context, (date, v1) -> {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                this.date = sdf.format(date);
-                validDate.setDetailText(this.date);
-            })
-                    .setType(new boolean[]{true, true, true, false, false, false})
-                    .setCancelText("取消")
-                    .setSubmitText("确定")
-                    .setTitleText("选择时间")
-                    .setTitleColor(context.getResources().getColor(R.color.black))
-                    .setCancelColor(context.getResources().getColor(R.color.grapefruit))
-                    .setSubmitColor(context.getResources().getColor(R.color.text1))
-                    .setRangDate(startDate, endDate)
-                    .isDialog(true)
-                    .build();
-        }
+        pickerView = new TimePickerView.Builder(context, (date, v1) -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            if (startOrEnd) {
+                this.startTime = sdf.format(date);
+                this.startDate.setDetailText(this.startTime);
+            }else{
+                this.endTime=sdf.format(date);
+                this.endDate.setDetailText(this.endTime);
+            }
+        })
+                .setType(new boolean[]{true, true, true, false, false, false})
+                .setCancelText("取消")
+                .setSubmitText("确定")
+                .setTitleText("选择时间")
+                .setTitleColor(context.getResources().getColor(R.color.black))
+                .setCancelColor(context.getResources().getColor(R.color.grapefruit))
+                .setSubmitColor(context.getResources().getColor(R.color.text1))
+                .setRangDate(beginDate, endDate)
+                .isDialog(true)
+                .build();
     }
     public NewFaceDialogBuilder setImage(byte[] imageData) {
         this.imageData = imageData;
@@ -138,14 +174,22 @@ public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
     }
 
     public String getName() {
-        return editText.getText().toString();
+        return editName.getText().toString();
+    }
+
+    public String getIdNum(){
+        return editIdNum.getText().toString();
     }
 
     public String getType() {
         return types[choice];
     }
 
-    public String getDate(){
-        return date;
+    public String getStartTime(){
+        return startTime;
+    }
+
+    public String getEndTime(){
+        return endTime;
     }
 }

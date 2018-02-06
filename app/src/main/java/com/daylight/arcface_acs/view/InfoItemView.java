@@ -53,7 +53,7 @@ public class InfoItemView extends QMUICommonListItemView {
         setAccessoryType(ACCESSORY_TYPE_NONE);
     }
     public void setImageDrawable(byte[] imagePath){
-        GlideApp.with(this).asBitmap().error(R.drawable.icon_failure).load(imagePath).override(220,220).into(mImageView);
+        GlideApp.with(this).asBitmap().error(R.drawable.icon_failure).load(imagePath).override(240,240).into(mImageView);
         mImageView.setVisibility(VISIBLE);
     }
 }

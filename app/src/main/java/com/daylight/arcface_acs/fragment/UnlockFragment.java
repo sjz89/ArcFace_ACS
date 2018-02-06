@@ -26,15 +26,13 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 public class UnlockFragment extends BaseFragment {
     private View view;
     private User user;
+    private UserViewModel viewModel;
+    private QMUITopBarLayout topBar;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserViewModel viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
+        viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
         user= viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
-        viewModel.getUser().observe(this,user1 -> {
-            if (user1!=null)
-                user=user1;
-        });
     }
 
     @SuppressLint("InflateParams")
@@ -43,11 +41,22 @@ public class UnlockFragment extends BaseFragment {
         view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_unlock, null);
         initTopBar();
         initButton();
+        viewModel.getUser().observe(this,user1 -> {
+            if (user1!=null)
+                user=user1;
+            if (user.getStatus()== Values.EXAMINE){
+                topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.grapefruit));
+                topBar.setSubTitle(R.string.account_examine);
+            }else{
+                topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.app_color_blue_2));
+                topBar.setSubTitle(null);
+            }
+        });
         return view;
     }
 
     private void initTopBar() {
-        QMUITopBarLayout topBar = view.findViewById(R.id.topbar_unlock);
+        topBar = view.findViewById(R.id.topbar_unlock);
         topBar.setTitle(R.string.title_unlock);
     }
 

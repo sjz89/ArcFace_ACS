@@ -95,7 +95,7 @@ public class InfoFragment extends BaseFragment {
         });
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
         viewModel.getAllFaces().observe(getBaseFragmentActivity(),faces -> {
-            if (faces != null) {
+            if (faces != null&&faces.size()!=0) {
                 face=faces.get(0);
                 features=viewModel.getFeatures(face.getId());
             }
@@ -144,8 +144,10 @@ public class InfoFragment extends BaseFragment {
                                         user.setName(editName.getText().toString());
                                         user.setIdNum(editIdNum.getText().toString());
                                         user.setDoorNum(editDoorNum.getText().toString());
+                                        user.setStatus(Values.EXAMINE);
                                         userViewModel.update(user);
                                         face.setName(user.getName());
+                                        face.setIdNum(user.getIdNum());
                                         viewModel.update(face);
                                         dialog.dismiss();
                                         popBackStack();

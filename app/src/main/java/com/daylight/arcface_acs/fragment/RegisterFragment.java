@@ -30,6 +30,7 @@ import com.daylight.arcface_acs.dialog.AddFaceDialogBuilder;
 import com.daylight.arcface_acs.dialog.NewFaceDialogBuilder;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
 import com.daylight.arcface_acs.utils.ImageUtil;
+import com.daylight.arcface_acs.utils.SharedPreferencesUtil;
 import com.daylight.arcface_acs.viewmodel.FaceViewModel;
 import com.qmuiteam.qmui.arch.QMUIFragment;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
@@ -286,12 +287,42 @@ public class RegisterFragment extends QMUIFragment {
                                 popBackStack();
                             })))
                             .addAction(new QMUIDialogAction(getContext(),"确定",((dialog1, index) -> {
-
                                 viewModel.setFeature(feature);
                                 face.setName(dialogBuilder.getName());
                                 face.setFaceData(feature.getImageData());
+                                face.setIdNum(dialogBuilder.getIdNum());
                                 face.setType(dialogBuilder.getType());
-                                face.setValidDate(dialogBuilder.getDate());
+                                face.setStartDate(dialogBuilder.getStartTime());
+                                face.setEndDate(dialogBuilder.getEndTime());
+                                viewModel.getHttpApi().faceRegister(SharedPreferencesUtil.getAccount(getContext()),
+                                        face.getName(),face.getType(),face.getIdNum(),face.getStartDate(),face.getEndDate(),new int[0])
+                                        .enqueue(new Callback<String>() {
+                                            @Override
+                                            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                                                try {
+                                                    JSONObject jsonObject=new JSONObject(response.body());
+                                                    if(jsonObject.getBoolean("flag")){
+                                                        QMUITipDialog tipDialog=new QMUITipDialog.Builder(getContext())
+                                                                .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                                                                .setTipWord("成员注册成功")
+                                                                .create(true);
+                                                        tipDialog.show();
+                                                        new Handler().postDelayed(tipDialog::dismiss,1000);
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            @Override
+                                            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getContext())
+                                                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+                                                        .setTipWord("成员注册失败")
+                                                        .create(true);
+                                                tipDialog.show();
+                                                new Handler().postDelayed(tipDialog::dismiss,1000);
+                                            }
+                                        });
                                 viewModel.insert(face);
                                 dialog1.dismiss();
                                 popBackStack();

@@ -131,20 +131,19 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                                                 public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                                                     try {
                                                         JSONObject jsonObject1 = new JSONObject(response.body());
-                                                        if (jsonObject1.getBoolean("flag")) {
-                                                            User user = viewModel.loadUser(account.getText().toString());
-                                                            if (user == null) {
-                                                                user = new User();
-                                                                user.setPhoneNum(account.getText().toString());
-                                                                user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
-                                                            }
-                                                            user.setCommunityName(jsonObject1.getString("communityName"));
-                                                            user.setBuildingName(jsonObject1.getString("buildingName"));
-                                                            user.setDoorNum(jsonObject1.getString("num"));
-                                                            user.setIdNum(jsonObject1.getString("idnumber"));
-                                                            user.setStatus(jsonObject1.getInt("status"));
-                                                            viewModel.insert(user);
+                                                        User user = viewModel.loadUser(account.getText().toString());
+                                                        if (user == null) {
+                                                            user = new User();
+                                                            user.setPhoneNum(account.getText().toString());
+                                                            user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
                                                         }
+                                                        user.setName(jsonObject1.getString("name"));
+                                                        user.setCommunityName(jsonObject1.getString("communityName"));
+                                                        user.setBuildingName(jsonObject1.getString("buildingName"));
+                                                        user.setDoorNum(jsonObject1.getString("num"));
+                                                        user.setIdNum(jsonObject1.getString("idnumber"));
+                                                        user.setStatus(jsonObject1.getInt("status"));
+                                                        viewModel.insert(user);
                                                     } catch (JSONException e) {
                                                         User user = viewModel.loadUser(account.getText().toString());
                                                         if (user == null) {

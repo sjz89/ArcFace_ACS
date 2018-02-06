@@ -113,7 +113,7 @@ public class DetailFragment extends QMUIFragment {
         type.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
         type.setDetailText(face.getType());
         validDate=groupListView.createItemView("有效期");
-        validDate.setDetailText(face.getValidDate());
+        validDate.setDetailText(face.getStartDate());
         View.OnClickListener listener= v -> {
             if (v instanceof QMUICommonListItemView){
                 switch (((QMUICommonListItemView) v).getText().toString()){
@@ -139,7 +139,7 @@ public class DetailFragment extends QMUIFragment {
                                         choice=0;
                                         groupListView.hideItemView(0,2);
                                         face.setType(types[0]);
-                                        face.setValidDate(null);
+                                        face.setStartDate(null);
                                         viewModel.update(face);
                                     }else{
                                         choice=1;
@@ -153,9 +153,9 @@ public class DetailFragment extends QMUIFragment {
                         break;
                     case "有效期":
                         initDatePicker();
-                        if (face.getValidDate()!=null){
+                        if (face.getStartDate()!=null){
                             selectDate=Calendar.getInstance();
-                            String[] times=face.getValidDate().split("-");
+                            String[] times=face.getStartDate().split("-");
                             selectDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
                             pickerView.setDate(selectDate);
                         }
@@ -187,7 +187,7 @@ public class DetailFragment extends QMUIFragment {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 this.date = sdf.format(date);
                 validDate.setDetailText(this.date);
-                face.setValidDate(this.date);
+                face.setStartDate(this.date);
                 viewModel.update(face);
             })
                     .setType(new boolean[]{true, true, true, false, false, false})
