@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="com.daylight.arcface_acs.activity.LockActivity">
+
+    <TextView
+        android:id="@+id/hint_pattern"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pattern_lock_view"
+        android:layout_marginBottom="36dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/hint_pattern_wrong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pattern_lock_view"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:text="@string/pattern_wrong_hint"
+        android:textColor="@color/black"/>
+
+    <com.andrognito.patternlockview.PatternLockView
+        android:id="@+id/pattern_lock_view"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        app:wrongStateColor="@color/grapefruit"
+        app:normalStateColor="@color/black"
+        app:correctStateColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/forgetPwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_below="@id/pattern_lock_view"
+        android:layout_centerHorizontal="true"
+        android:text="@string/forget_password"
+        android:textColor="@drawable/text_color_black"
+        android:textSize="15sp"/>
+
+</RelativeLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="blue">#4FC3F7</color>
+    <color name="grey">#A9A9A9</color>
+    <color name="transparent">#00000000</color>
+    <color name="login_bg">#7adfb8</color>
+    <color name="text_second_level">#8C000000</color>
+    <color name="text1">#59B29C</color>
+    <color name="text2">#333333</color>
+    <color name="split_line">#11112233</color>
+
+    <color name="app_color_blue">#00A8E1</color>
+    <color name="app_color_blue_disabled">#8000A8E1</color>
+    <color name="app_color_blue_pressed">#c000A8E1</color>
+
+    <color name="app_color_blue_2">#31BDF3</color>
+    <color name="app_color_blue_2_disabled">#7F31BDF3</color>
+    <color name="app_color_blue_2_pressed">#7F31BDF3</color>
+
+    <color name="grapefruit">#EF5362</color> <!-- Grapefruit -->
+    <color name="bittersweet">#FE6D4B</color> <!-- Bittersweet -->
+    <color name="sunflower">#FFCF47</color> <!-- Sunflower -->
+    <color name="grass">#9FD661</color> <!-- Grass -->
+    <color name="mint">#3FD0AD</color> <!-- Mint -->
+    <color name="aqua">#2BBDF3</color> <!-- Aqua -->
+    <color name="blueJeans">#5A9AEF</color> <!-- Blue Jeans -->
+    <color name="lavender">#AC8FEF</color> <!-- Lavender -->
+    <color name="pinkRose">#EE85C1</color> <!-- Pink Rose -->
+
+    <color name="software_textColor_selected">#FFDCE0DF</color>
+    <color name="software_textColor_unselected">#FFFFFFFF</color>
+</resources>

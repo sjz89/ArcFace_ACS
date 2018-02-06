@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/pin_lock_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="18dp"
+        android:text="@string/cancel"
+        android:textColor="@color/blueJeans"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/pin_lock_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="18dp"
+        android:visibility="gone"
+        android:clickable="false"
+        android:text="@string/next"
+        android:textColor="@color/grey"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/hint_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"/>
+
+    <com.andrognito.pinlockview.IndicatorDots
+        android:id="@+id/indicator_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/hint_pin"
+        android:layout_marginTop="14dp"
+        app:dotEmptyBackground="@drawable/pin_dot_empty"
+        app:dotFilledBackground="@drawable/pin_dot_fill"
+        app:dotDiameter="11dp"/>
+
+    <com.andrognito.pinlockview.PinLockView
+        android:id="@+id/pin_lock_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/indicator_dots"
+        android:layout_marginTop="18dp"
+        android:layout_centerHorizontal="true"
+        app:keypadButtonSize="56dp"
+        app:keypadShowDeleteButton="true"
+        app:keypadVerticalSpacing="12dp"
+        app:keypadDeleteButtonDrawable="@mipmap/ic_delete"
+        app:keypadDeleteButtonSize="24dp"
+        app:keypadButtonBackgroundDrawable="@drawable/pin_dot_bg"
+        app:keypadTextColor="@android:color/black"
+        app:keypadTextSize="24dp"/>
+
+</RelativeLayout>

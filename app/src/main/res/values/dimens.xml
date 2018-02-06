@@ -1,0 +1,5 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="home_tab_height">49dp</dimen>
+    <dimen name="new_face_date_text_size">14sp</dimen>
+</resources>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name" translatable="false">AEye</string>
+    <string name="title_unlock">Home</string>
+    <string name="title_faces">Members</string>
+    <string name="title_setting">Setting</string>
+    <string name="title_device">Device</string>
+    <string name="unlock">Unlock</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="new_account">Sign Up</string>
+    <string name="password">Password</string>
+    <string name="new_password">New Password</string>
+    <string name="account">Phone Number</string>
+    <string name="forget_password">Forget Password?</string>
+    <string name="pattern_wrong_hint">5 times to try</string>
+    <string name="check_password">Check Your Password</string>
+    <string name="msg_code">Identify Code</string>
+    <string name="get_msg_code">Get Msg Code</string>
+    <string name="username">UserName</string>
+    <string name="communityName">Address</string>
+    <string name="sign_up_account_wrong">Wrong Phone Number</string>
+    <string name="sign_up_registered">Registered</string>
+    <string name="sign_up_pwd_hint">Needed</string>
+    <string name="sign_up_check_pwd_hint">Different with password</string>
+    <string name="sign_up_code_hint">Need Msg Code</string>
+    <string name="add_member">add</string>
+    <string name="face_name">Name</string>
+    <string name="valid_date">ValidDate</string>
+    <string name="pick_date">Choice Date</string>
+    <string name="commit">Commit</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
+    <string name="slogan">Wise Your Life</string>
+</resources>
