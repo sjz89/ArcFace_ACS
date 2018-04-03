@@ -38,4 +38,12 @@
     <string name="minute">Minute</string>
     <string name="slogan">Wise Your Life</string>
     <string name="account_examine">Account Error</string>
+    <string name="record">Record</string>
+    <string name="property">Property</string>
+    <string name="express">Express</string>
+    <string name="request">Request</string>
+    <string name="neighbor">Neighbor</string>
+    <string name="send">Send</string>
+    <string name="board">Board</string>
+    <string name="news">News</string>
 </resources>

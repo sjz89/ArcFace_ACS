@@ -1,11 +1,13 @@
 package com.daylight.arcface_acs.view;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.daylight.arcface_acs.R;
 import com.daylight.arcface_acs.app.GlideApp;
+import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.util.QMUIResHelper;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
@@ -16,6 +18,10 @@ import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
 @SuppressWarnings("SameParameterValue")
 public class InfoItemView extends QMUICommonListItemView {
+    public InfoItemView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public InfoItemView(Context context) {
         super(context);
     }
@@ -53,7 +59,22 @@ public class InfoItemView extends QMUICommonListItemView {
         setAccessoryType(ACCESSORY_TYPE_NONE);
     }
     public void setImageDrawable(byte[] imagePath){
-        GlideApp.with(this).asBitmap().error(R.drawable.icon_failure).load(imagePath).override(240,240).into(mImageView);
+        GlideApp.with(this).asBitmap().load(imagePath).override(240,240).into(mImageView);
+        mImageView.setVisibility(VISIBLE);
+    }
+    public void setImageDrawable(byte[] imagePath,int width,int height){
+        GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
+                QMUIDisplayHelper.dpToPx(height)).into(mImageView);
+        mImageView.setVisibility(VISIBLE);
+    }
+    public void setImageDrawable(String imagePath,int width,int height){
+        GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
+                QMUIDisplayHelper.dpToPx(height)).into(mImageView);
+        mImageView.setVisibility(VISIBLE);
+    }
+    public void setImageDrawable(int imagePath,int width,int height){
+        GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
+                QMUIDisplayHelper.dpToPx(height)).into(mImageView);
         mImageView.setVisibility(VISIBLE);
     }
 }

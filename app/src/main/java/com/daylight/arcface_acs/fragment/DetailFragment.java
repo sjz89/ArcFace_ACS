@@ -53,11 +53,14 @@ public class DetailFragment extends QMUIFragment {
     private int mPosition;
     private List<Feature> features;
     private Face face;
-    private String date;
-    private QMUICommonListItemView validDate;
+    private QMUICommonListItemView startDate;
+    private QMUICommonListItemView endDate;
+    private String startTime,endTime;
     private int choice;
-    private Calendar selectDate;
     private TimePickerView pickerView;
+    private Calendar selectStartDate;
+    private Calendar selectEndDate;
+
 
     @SuppressLint("InflateParams")
     @Override
@@ -112,8 +115,12 @@ public class DetailFragment extends QMUIFragment {
         QMUICommonListItemView type=groupListView.createItemView("类别");
         type.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
         type.setDetailText(face.getType());
-        validDate=groupListView.createItemView("有效期");
-        validDate.setDetailText(face.getStartDate());
+        startDate =groupListView.createItemView("起始日期");
+        startDate.setDetailText(face.getStartDate());
+        endDate=groupListView.createItemView("终止日期");
+        endDate.setDetailText(face.getEndDate());
+        Calendar beginDate = Calendar.getInstance();
+        beginDate.setTime(new Date());
         View.OnClickListener listener= v -> {
             if (v instanceof QMUICommonListItemView){
                 switch (((QMUICommonListItemView) v).getText().toString()){
@@ -138,12 +145,14 @@ public class DetailFragment extends QMUIFragment {
                                     if (which==0){
                                         choice=0;
                                         groupListView.hideItemView(0,2);
+                                        groupListView.hideItemView(0,3);
                                         face.setType(types[0]);
                                         face.setStartDate(null);
                                         viewModel.update(face);
                                     }else{
                                         choice=1;
                                         groupListView.showItemView(0,2);
+                                        groupListView.showItemView(0,3);
                                         face.setType(types[1]);
                                         viewModel.update(face);
                                     }
@@ -151,13 +160,27 @@ public class DetailFragment extends QMUIFragment {
                                     dialog.dismiss();
                                 })).show();
                         break;
-                    case "有效期":
-                        initDatePicker();
-                        if (face.getStartDate()!=null){
-                            selectDate=Calendar.getInstance();
-                            String[] times=face.getStartDate().split("-");
-                            selectDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
-                            pickerView.setDate(selectDate);
+                    case "起始日期":
+                        initDatePicker(beginDate,true);
+                        if (!startDate.getDetailText().toString().equals("")){
+                            String[] times= startDate.getDetailText().toString().split("-");
+                            selectStartDate =Calendar.getInstance();
+                            selectStartDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                            pickerView.setDate(selectStartDate);
+                        }
+                        pickerView.show();
+                        break;
+                    case "终止日期":
+                        if (!startDate.getDetailText().toString().equals("")){
+                            String[] times= startDate.getDetailText().toString().split("-");
+                            beginDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                        }
+                        initDatePicker(beginDate,false);
+                        if (!endDate.getDetailText().toString().equals("")){
+                            String[] times= endDate.getDetailText().toString().split("-");
+                            selectEndDate =Calendar.getInstance();
+                            selectEndDate.set(Integer.parseInt(times[0]),Integer.parseInt(times[1])-1,Integer.parseInt(times[2]));
+                            pickerView.setDate(selectStartDate);
                         }
                         pickerView.show();
                         break;
@@ -167,39 +190,43 @@ public class DetailFragment extends QMUIFragment {
         GroupListView.newSection(getContext())
                 .addItemView(name,listener)
                 .addItemView(type,listener)
-                .addItemView(validDate,listener)
+                .addItemView(startDate,listener)
+                .addItemView(endDate,listener)
                 .addTo(groupListView);
         if (face.getType().equals("常驻")) {
             choice=0;
             groupListView.hideItemView(0, 2);
+            groupListView.hideItemView(0,3);
         }else
             choice=1;
     }
 
-    private void initDatePicker() {
-        if (pickerView==null) {
-            Calendar startDate = Calendar.getInstance();
-            startDate.setTime(new Date());
-            Calendar endDate = Calendar.getInstance();
-            endDate.set(2028, 11, 31);
+    private void initDatePicker(Calendar beginDate,boolean startOrEnd) {
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(2028, 11, 31);
 
-            pickerView = new TimePickerView.Builder(getContext(), (date, v1) -> {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                this.date = sdf.format(date);
-                validDate.setDetailText(this.date);
-                face.setStartDate(this.date);
-                viewModel.update(face);
-            })
-                    .setType(new boolean[]{true, true, true, false, false, false})
-                    .setCancelText("取消")
-                    .setSubmitText("确定")
-                    .setTitleText("选择时间")
-                    .setTitleColor(getResources().getColor(R.color.black))
-                    .setCancelColor(getResources().getColor(R.color.grapefruit))
-                    .setSubmitColor(getResources().getColor(R.color.text1))
-                    .setRangDate(startDate, endDate)
-                    .build();
-        }
+        pickerView = new TimePickerView.Builder(getContext(), (date, v1) -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            if (startOrEnd) {
+                this.startTime = sdf.format(date);
+                this.startDate.setDetailText(this.startTime);
+                face.setStartDate(this.startTime);
+            }else{
+                this.endTime=sdf.format(date);
+                this.endDate.setDetailText(this.endTime);
+                face.setEndDate(this.endTime);
+            }
+            viewModel.update(face);
+        })
+                .setType(new boolean[]{true, true, true, false, false, false})
+                .setCancelText("取消")
+                .setSubmitText("确定")
+                .setTitleText("选择时间")
+                .setTitleColor(getResources().getColor(R.color.black))
+                .setCancelColor(getResources().getColor(R.color.grapefruit))
+                .setSubmitColor(getResources().getColor(R.color.text1))
+                .setRangDate(beginDate, endDate)
+                .build();
     }
 
     private void initListPopupIfNeed() {

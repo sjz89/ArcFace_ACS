@@ -47,4 +47,13 @@ public class SharedPreferencesUtil {
         SharedPreferences sp=context.getSharedPreferences(Values.NUMBER,Context.MODE_PRIVATE);
         return sp.getInt("count",-1);
     }
+    public static void setPin(Context context,String pin){
+        SharedPreferences.Editor spe=context.getSharedPreferences(Values.USER,Context.MODE_PRIVATE).edit();
+        spe.putString("pin",pin);
+        spe.apply();
+    }
+    public static String getPin(Context context){
+        SharedPreferences sp=context.getSharedPreferences(Values.USER,Context.MODE_PRIVATE);
+        return sp.getString("pin","");
+    }
 }

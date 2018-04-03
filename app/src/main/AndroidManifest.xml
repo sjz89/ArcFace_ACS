@@ -17,9 +17,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.LockActivity"/>
         <activity android:name=".activity.SplashActivity">
@@ -37,6 +42,17 @@
                 <data android:mimeType="image/*"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".app.MessageService" />
+        <receiver android:name=".widget.DoorOpenWidget">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_provider_info" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.daylight.arcface_acs.CLICK" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -38,4 +38,12 @@
     <string name="new_password">新密码</string>
     <string name="slogan">智慧你的生活</string>
     <string name="account_examine">账号尚未通过审核</string>
+    <string name="record">通行记录</string>
+    <string name="property">物业服务</string>
+    <string name="express">快递信息</string>
+    <string name="request">门禁申请</string>
+    <string name="neighbor">邻居</string>
+    <string name="send">发送</string>
+    <string name="board">公告</string>
+    <string name="news">通知</string>
 </resources>

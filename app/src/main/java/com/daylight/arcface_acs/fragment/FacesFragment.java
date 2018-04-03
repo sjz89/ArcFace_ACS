@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
-import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.adapter.FacesListAdapter;
 import com.daylight.arcface_acs.app.MyApplication;
 import com.daylight.arcface_acs.R;
@@ -23,7 +22,6 @@ import com.daylight.arcface_acs.bean.Feature;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
 import com.daylight.arcface_acs.utils.SharedPreferencesUtil;
 import com.daylight.arcface_acs.viewmodel.FaceViewModel;
-import com.daylight.arcface_acs.viewmodel.UserViewModel;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -52,7 +50,6 @@ public class FacesFragment extends BaseFragment{
     private QMUIListPopup mListPopup;
     private List<Face> mFaces;
     private int mPosition;
-    private QMUITopBarLayout topBar;
 
     @SuppressLint("InflateParams")
     @Override
@@ -84,19 +81,9 @@ public class FacesFragment extends BaseFragment{
         return view;
     }
     private void initTopBar(){
-        topBar=view.findViewById(R.id.topbar_faces);
+        QMUITopBarLayout topBar = view.findViewById(R.id.topbar_faces);
+        topBar.addLeftBackImageButton().setOnClickListener(v -> popBackStack());
         topBar.setTitle(R.string.title_faces);
-        ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class).getUser().observe(getBaseFragmentActivity(),user -> {
-            if (user!=null){
-                if (user.getStatus()== Values.EXAMINE){
-                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.grapefruit));
-                    topBar.setSubTitle(R.string.account_examine);
-                }else{
-                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.app_color_blue_2));
-                    topBar.setSubTitle(null);
-                }
-            }
-        });
     }
 
     private void initPullRefreshLayout(){
@@ -222,9 +209,5 @@ public class FacesFragment extends BaseFragment{
     private void startRegister(String path){
         viewModel.setPath(path);
         startFragment(new RegisterFragment());
-    }
-    @Override
-    protected boolean canDragBack() {
-        return false;
     }
 }

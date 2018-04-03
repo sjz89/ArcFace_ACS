@@ -219,7 +219,18 @@ public class RegisterFragment extends QMUIFragment {
                             }
                         }
                         @Override
-                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {}
+                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//                            loading.dismiss();
+//                            Feature feature=new Feature();
+//                            feature.setFaceId(face.getId());
+//                            feature.setImageData(imageDate);
+//                            feature.setFeatureData(mAFR_FSDKFace.getFeatureData());
+//                            Message reg = Message.obtain();
+//                            reg.what = MSG_CODE;
+//                            reg.arg1 = MSG_EVENT_REG;
+//                            reg.obj = feature;
+//                            handler.sendMessage(reg);
+                        }
                     });
                     face_bitmap.recycle();
                 } else {
@@ -294,28 +305,31 @@ public class RegisterFragment extends QMUIFragment {
                                 face.setType(dialogBuilder.getType());
                                 face.setStartDate(dialogBuilder.getStartTime());
                                 face.setEndDate(dialogBuilder.getEndTime());
-                                viewModel.getHttpApi().faceRegister(SharedPreferencesUtil.getAccount(getContext()),
-                                        face.getName(),face.getType(),face.getIdNum(),face.getStartDate(),face.getEndDate(),new int[0])
+                                int type=100;
+                                if (face.getType().equals("访客"))
+                                    type=200;
+                                viewModel.getHttpApi().faceRegister(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()),
+                                        face.getName(),type,face.getIdNum(),/*face.getStartDate(),face.getEndDate(),*/new int[]{0})
                                         .enqueue(new Callback<String>() {
                                             @Override
                                             public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
                                                 try {
                                                     JSONObject jsonObject=new JSONObject(response.body());
                                                     if(jsonObject.getBoolean("flag")){
-                                                        QMUITipDialog tipDialog=new QMUITipDialog.Builder(getContext())
+                                                        QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
                                                                 .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
                                                                 .setTipWord("成员注册成功")
                                                                 .create(true);
                                                         tipDialog.show();
                                                         new Handler().postDelayed(tipDialog::dismiss,1000);
                                                     }
-                                                } catch (JSONException e) {
+                                                } catch (JSONException | NullPointerException e) {
                                                     e.printStackTrace();
                                                 }
                                             }
                                             @Override
                                             public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getContext())
+                                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
                                                         .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
                                                         .setTipWord("成员注册失败")
                                                         .create(true);

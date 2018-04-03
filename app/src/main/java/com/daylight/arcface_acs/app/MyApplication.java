@@ -9,7 +9,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-
 public class MyApplication extends Application {
     private Uri mImage;
     @Override
@@ -17,6 +16,8 @@ public class MyApplication extends Application {
         super.onCreate();
         mImage=null;
     }
+
+
     public void setCaptureImage(Uri uri) {
         mImage = uri;
     }

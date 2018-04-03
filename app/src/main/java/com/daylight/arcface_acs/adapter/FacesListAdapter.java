@@ -1,6 +1,7 @@
 package com.daylight.arcface_acs.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,8 +40,9 @@ public class FacesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return TYPE_NORMAL;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType==TYPE_NORMAL) {
             View view = mInflater.inflate(R.layout.item_faces, parent, false);
             return new FaceViewHolder(view);
@@ -51,7 +53,7 @@ public class FacesListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FaceViewHolder) {
             FaceViewHolder faceViewHolder=(FaceViewHolder)holder;
             if (mFaces != null) {

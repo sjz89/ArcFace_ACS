@@ -21,6 +21,7 @@ public class User {
     private String doorNum;
     private String pattern;
     private String pin;
+    private boolean authorize;
     private boolean hasPatternLock;
     private int status;
 
@@ -118,5 +119,13 @@ public class User {
 
     public String getIdNum() {
         return idNum;
+    }
+
+    public void setAuthorize(boolean authorize) {
+        this.authorize = authorize;
+    }
+
+    public boolean isAuthorize() {
+        return authorize;
     }
 }

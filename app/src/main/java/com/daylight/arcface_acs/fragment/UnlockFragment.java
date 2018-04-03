@@ -9,14 +9,19 @@ import android.view.View;
 import android.widget.Button;
 
 import com.daylight.arcface_acs.R;
+import com.daylight.arcface_acs.adapter.ImagePagerAdapter;
 import com.daylight.arcface_acs.viewmodel.UserViewModel;
 import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.bean.User;
 import com.daylight.arcface_acs.dialog.PinLockDialog;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
 import com.daylight.arcface_acs.utils.SharedPreferencesUtil;
+import com.github.demono.AutoScrollViewPager;
 import com.qmuiteam.qmui.widget.QMUITopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 解锁界面
@@ -27,6 +32,7 @@ public class UnlockFragment extends BaseFragment {
     private View view;
     private User user;
     private UserViewModel viewModel;
+    private AutoScrollViewPager viewPager;
     private QMUITopBarLayout topBar;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class UnlockFragment extends BaseFragment {
         view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_unlock, null);
         initTopBar();
         initButton();
+        initViewPage();
         viewModel.getUser().observe(this,user1 -> {
             if (user1!=null)
                 user=user1;
@@ -58,6 +65,19 @@ public class UnlockFragment extends BaseFragment {
     private void initTopBar() {
         topBar = view.findViewById(R.id.topbar_unlock);
         topBar.setTitle(R.string.title_unlock);
+    }
+
+    private void initViewPage(){
+        viewPager=view.findViewById(R.id.viewPager);
+        ImagePagerAdapter adapter=new ImagePagerAdapter(getContext());
+        List<String> data=new ArrayList<>();
+        data.add("http://img2.imgtn.bdimg.com/it/u=1655431608,2212416494&fm=27&gp=0.jpg");
+        data.add("http://d.hiphotos.baidu.com/zhidao/pic/item/279759ee3d6d55fb2166d92165224f4a20a4dd11.jpg");
+        data.add("http://f2.dn.anqu.com/down/NjY4Mg==/allimg/1208/48-120P31A014.jpg");
+        data.add("http://imgsrc.baidu.com/forum/w%3D580/sign=7ca341b5d8f9d72a17641015e428282a/efc8840e7bec54e7503e3f94b8389b504dc26a65.jpg");
+        adapter.setData(data);
+        viewPager.setAdapter(adapter);
+        viewPager.startAutoScroll();
     }
 
     private void initButton() {
@@ -88,5 +108,11 @@ public class UnlockFragment extends BaseFragment {
     @Override
     protected boolean canDragBack() {
         return false;
+    }
+
+    @Override
+    public void onStop() {
+        viewPager.stopAutoScroll();
+        super.onStop();
     }
 }

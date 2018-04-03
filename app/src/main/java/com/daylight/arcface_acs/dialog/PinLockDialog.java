@@ -12,7 +12,6 @@ import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.daylight.arcface_acs.R;
-import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.bean.User;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
 import com.daylight.arcface_acs.utils.SharedPreferencesUtil;
@@ -45,6 +44,13 @@ public class PinLockDialog extends QMUIBottomSheet implements View.OnClickListen
         initView();
         setContentView(view);
     }
+    @SuppressLint("InflateParams")
+    public PinLockDialog(Context context){
+        super(context);
+        view=LayoutInflater.from(context).inflate(R.layout.dialog_pin,null);
+        initView();
+        setContentView(view);
+    }
     private void initView(){
         pinLockView=view.findViewById(R.id.pin_lock_view);
         indicatorDots = view.findViewById(R.id.indicator_dots);
@@ -68,7 +74,10 @@ public class PinLockDialog extends QMUIBottomSheet implements View.OnClickListen
 
     public void verifyPin(){
         pinLockView.setPinLockListener(verifyPinLockListener);
-        pinLockView.setPinLength(user.getPin().length());
+        if (user!=null)
+            pinLockView.setPinLength(user.getPin().length());
+        else
+            pinLockView.setPinLength(SharedPreferencesUtil.getPin(getContext()).length());
         indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FIXED);
         hint.setText("请输入密码");
         show();
@@ -110,6 +119,7 @@ public class PinLockDialog extends QMUIBottomSheet implements View.OnClickListen
                         hint.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.fade));
                         user.setPin(pin);
                         RxBusHelper.post(user);
+                        SharedPreferencesUtil.setPin(getContext(),pin);
                         new Handler().postDelayed(() -> dismiss(),1500);
                     }else{
                         hint.setText("密码不匹配，请重试");
@@ -145,7 +155,7 @@ public class PinLockDialog extends QMUIBottomSheet implements View.OnClickListen
     private PinLockListener verifyPinLockListener=new PinLockListener() {
         @Override
         public void onComplete(String pin) {
-            if (pin.equals(user.getPin())){
+            if ((user!=null&&pin.equals(user.getPin()))||pin.equals(SharedPreferencesUtil.getPin(getContext()))){
                 hint.setText("解锁成功");
                 hint.startAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.fade));
                 new Handler().postDelayed(() -> dismiss(),1500);

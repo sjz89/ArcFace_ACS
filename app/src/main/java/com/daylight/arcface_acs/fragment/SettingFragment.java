@@ -11,7 +11,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.dialog.ChangePasswordDialogBuilder;
 import com.daylight.arcface_acs.viewmodel.FaceViewModel;
 import com.daylight.arcface_acs.viewmodel.UserViewModel;
@@ -40,14 +39,15 @@ public class SettingFragment extends BaseFragment{
     private FaceViewModel faceViewModel;
     private User user;
     private QMUICommonListItemView info;
-    private QMUITopBarLayout topBar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
         user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
         faceViewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        faceViewModel.getAllFaces().observe(getBaseFragmentActivity(),faces -> {
+        faceViewModel.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+        faceViewModel.getAllFaces().observe(this,faces -> {
             if (faces!=null&&info!=null)
                 ((InfoItemView)info).setImageDrawable(faces.get(0).getFaceData());
         });
@@ -63,7 +63,8 @@ public class SettingFragment extends BaseFragment{
     }
 
     private void initTopBar(){
-        topBar=view.findViewById(R.id.topbar_setting);
+        QMUITopBarLayout topBar = view.findViewById(R.id.topbar_setting);
+        topBar.addLeftBackImageButton().setOnClickListener(v -> popBackStack());
         topBar.setTitle(R.string.title_setting);
     }
 
@@ -76,6 +77,10 @@ public class SettingFragment extends BaseFragment{
 
         if (faceViewModel.loadFace(user.getPhoneNum()).getFaceData()!=null)
             ((InfoItemView)info).setImageDrawable(faceViewModel.loadFace(user.getPhoneNum()).getFaceData());
+
+        QMUICommonListItemView authorize=mGroupListView.createItemView("数据授权");
+        authorize.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
+        authorize.getSwitch().setChecked(user.isAuthorize());
 
         QMUICommonListItemView patternPassword = mGroupListView.createItemView("手势密码");
         patternPassword.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
@@ -102,7 +107,21 @@ public class SettingFragment extends BaseFragment{
             if (v instanceof QMUICommonListItemView) {
                 String text = ((QMUICommonListItemView) v).getText().toString();
                 switch (text){
-                    case "业主信息":
+                    case "数据授权":
+                        if (!authorize.getSwitch().isChecked())
+                            new QMUIDialog.MessageDialogBuilder(getContext())
+                                .setTitle("数据授权")
+                                .setMessage("我们将获取您进出门的数据用来为您提供服务。")
+                                .addAction("拒绝",((dialog, index) -> dialog.dismiss()))
+                                .addAction("同意",((dialog, index) -> {
+                                    user.setAuthorize(true);
+                                    viewModel.update(user);
+                                    dialog.dismiss();
+                                })).show();
+                        else{
+                            user.setAuthorize(false);
+                            viewModel.update(user);
+                        }
                         break;
                     case "手势密码":
                         if (patternPassword.getSwitch().isChecked()) {
@@ -207,6 +226,7 @@ public class SettingFragment extends BaseFragment{
                 .addTo(mGroupListView);
 
         GroupListView.newSection(getContext())
+                .addItemView(authorize,onClickListener)
                 .addItemView(patternPassword,onClickListener)
                 .addItemView(changePattern,onClickListener)
                 .addItemView(pinPassword, onClickListener)
@@ -222,31 +242,25 @@ public class SettingFragment extends BaseFragment{
                 .addTo(mGroupListView);
 
         if (!user.isHasPatternLock())
-            mGroupListView.hideItemView(1,1);
+            mGroupListView.hideItemView(1,2);
 
         RxBusHelper.doOnChildThread(User.class,user1 -> viewModel.update(user1));
 
         viewModel.getUser().observe(this, user -> {
             if (user!=null) {
                 this.user=user;
-                if (user.getStatus()== Values.EXAMINE){
-                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.grapefruit));
-                    topBar.setSubTitle(R.string.account_examine);
-                }else{
-                    topBar.setBackgroundColor(getBaseFragmentActivity().getResources().getColor(R.color.app_color_blue_2));
-                    topBar.setSubTitle(null);
-                }
                 if (user.getPin() == null)
                     pinPassword.setText("设置开门密码");
                 else
                     pinPassword.setText("修改开门密码");
                 if (!user.isHasPatternLock()){
                     patternPassword.getSwitch().setChecked(false);
-                    mGroupListView.hideItemView(1,1);
+                    mGroupListView.hideItemView(1,2);
                 }else{
                     patternPassword.getSwitch().setChecked(true);
-                    mGroupListView.showItemView(1,1);
+                    mGroupListView.showItemView(1,2);
                 }
+                authorize.getSwitch().setChecked(user.isAuthorize());
             }
         });
     }
@@ -258,9 +272,5 @@ public class SettingFragment extends BaseFragment{
                 .create(true);
         tipDialog.show();
         new Handler().postDelayed(tipDialog::dismiss,1000);
-    }
-    @Override
-    protected boolean canDragBack() {
-        return false;
     }
 }

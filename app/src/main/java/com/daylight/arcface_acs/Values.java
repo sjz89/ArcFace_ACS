@@ -10,7 +10,7 @@ public class Values {
     public final static String fd_key = "3sAedYdce18nBKaQxcujZmGhQi52adHbwmR7VyvRDSn1";
     public final static String fr_key = "3sAedYdce18nBKaQxcujZmGpa7LCj6XP5drwNVtMQUvU";
 
-    public final static String ServiceUrl="http://192.168.123.140:4001/";
+    public final static String ServiceUrl="http://192.168.0.106:4001/";
 
     public final static int UNREGISTER=0;
     public final static int EXAMINE=-100;
@@ -20,7 +20,12 @@ public class Values {
     public final static int GO_TO_SET_PIN =0;
     public static final int REQUEST_CODE_IMAGE_CAMERA = 1;
     public static final int REQUEST_CODE_IMAGE_OP = 2;
+    public static final int RECORD_UPDATE_DONE=3;
+    public static final int REQUEST_FAIL=-1;
 
     public final static String USER ="user";
     public final static String NUMBER="data_number";
+
+    public final static int MessageType_Receive=1;
+    public final static int MessageType_Send=2;
 }

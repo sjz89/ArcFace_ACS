@@ -27,8 +27,8 @@ public interface UserDao {
     void deleteUsers(User... users);
     @Update
     void updateUsers(User... users);
-    @Query("Select * from user_table")
-    LiveData<List<User>> getAllUsers();
+    @Query("Select * from user_table where communityName=:community AND buildingName=:building And name!=:name order by doorNum desc")
+    List<User> getNeighbors(String community,String building,String name);
     @Query("Select * from user_table where phoneNum=:account limit 1")
     LiveData<User> getUser(String account);
     @Query("Select * from user_table where phoneNum=:account limit 1")

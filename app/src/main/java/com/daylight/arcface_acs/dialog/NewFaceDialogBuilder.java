@@ -168,6 +168,7 @@ public class NewFaceDialogBuilder extends QMUIDialog.CustomDialogBuilder {
                 .isDialog(true)
                 .build();
     }
+
     public NewFaceDialogBuilder setImage(byte[] imageData) {
         this.imageData = imageData;
         return this;

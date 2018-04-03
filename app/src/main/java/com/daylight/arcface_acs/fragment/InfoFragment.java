@@ -94,7 +94,8 @@ public class InfoFragment extends BaseFragment {
             }
         });
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        viewModel.getAllFaces().observe(getBaseFragmentActivity(),faces -> {
+        viewModel.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+        viewModel.getAllFaces().observe(this,faces -> {
             if (faces != null&&faces.size()!=0) {
                 face=faces.get(0);
                 features=viewModel.getFeatures(face.getId());

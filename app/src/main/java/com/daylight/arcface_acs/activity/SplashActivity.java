@@ -10,6 +10,7 @@ import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.daylight.arcface_acs.R;
@@ -49,7 +50,9 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        GlideApp.with(this).load(R.drawable.splash).into((ImageView)findViewById(R.id.splash_View));
+        ImageView imageView=findViewById(R.id.splash_View);
+        GlideApp.with(this).load(R.drawable.splash).centerCrop().into(imageView);
+        imageView.startAnimation(AnimationUtils.loadAnimation(this,R.anim.alpha_splash));
         SQLiteStudioService.instance().start(this);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             for (String one : mPermission) {
@@ -120,6 +123,7 @@ public class SplashActivity extends AppCompatActivity {
                                                 user.setIdNum(jsonObject1.getString("idnumber"));
                                                 user.setStatus(jsonObject1.getInt("status"));
                                                 viewModel.update(user);
+                                                viewModel.updateRecords();
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }

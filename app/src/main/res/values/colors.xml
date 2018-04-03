@@ -10,7 +10,11 @@
     <color name="text_second_level">#8C000000</color>
     <color name="text1">#59B29C</color>
     <color name="text2">#333333</color>
+    <color name="text_time">#BDBDBD</color>
+    <color name="receive_bg">#EEEEEE</color>
+    <color name="send_bg">#4FC3F7</color>
     <color name="split_line">#11112233</color>
+    <color name="editor_bg">#55EEEEEE</color>
 
     <color name="app_color_blue">#00A8E1</color>
     <color name="app_color_blue_disabled">#8000A8E1</color>
@@ -22,7 +26,7 @@
 
     <color name="grapefruit">#EF5362</color> <!-- Grapefruit -->
     <color name="bittersweet">#FE6D4B</color> <!-- Bittersweet -->
-    <color name="sunflower">#FFCF47</color> <!-- Sunflower -->
+    <color name="sunflower">#FFA824</color> <!-- Sunflower -->
     <color name="grass">#9FD661</color> <!-- Grass -->
     <color name="mint">#3FD0AD</color> <!-- Mint -->
     <color name="aqua">#2BBDF3</color> <!-- Aqua -->
@@ -32,4 +36,8 @@
 
     <color name="software_textColor_selected">#FFDCE0DF</color>
     <color name="software_textColor_unselected">#FFFFFFFF</color>
+
+    <color name="bar_divider">#D4D6D8</color>
+    <color name="tab_panel_bg">#ffffff</color>
+    <color name="tab_panel_divider">@color/bar_divider</color>
 </resources>

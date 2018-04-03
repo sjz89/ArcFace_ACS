@@ -99,8 +99,8 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
         accountInputLayout = root.findViewById(R.id.account_input_layout);
         passwordInputLayout = root.findViewById(R.id.password_input_layout);
 
-        account.setText(SharedPreferencesUtil.getAccount(getContext()));
-        password.setText(SharedPreferencesUtil.getPassword(getContext()));
+        account.setText(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
+        password.setText(SharedPreferencesUtil.getPassword(getBaseFragmentActivity()));
 
         mBtnLogin.setOnClickListener(this);
         (root.findViewById(R.id.forget_password)).setOnClickListener(this);
@@ -160,8 +160,9 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
                                                 }
                                             });
-                                            SharedPreferencesUtil.setAccount(getContext(),account.getText().toString());
-                                            SharedPreferencesUtil.setPassword(getContext(),password.getText().toString());
+                                            SharedPreferencesUtil.setAccount(getBaseFragmentActivity(),account.getText().toString());
+                                            SharedPreferencesUtil.setPassword(getBaseFragmentActivity(),password.getText().toString());
+                                            viewModel.updateRecords();
                                             Intent intent = new Intent(getBaseFragmentActivity(), MainActivity.class);
                                             startActivity(intent);
                                             getBaseFragmentActivity().finish();
