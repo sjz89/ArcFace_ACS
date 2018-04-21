@@ -50,7 +50,7 @@ public class NeighborFragment extends BaseFragment{
         super.onCreate(savedInstanceState);
         viewModel= ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
         faceViewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
+        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         viewModel.setRecent();
     }
 
@@ -140,7 +140,7 @@ public class NeighborFragment extends BaseFragment{
                     startFragment(new ChatFragment());
                 });
             }else{
-                recentAdapter = new CommonAdapter(getBaseFragmentActivity(), QMUICommonListItemView.VERTICAL,true);
+                recentAdapter = new CommonAdapter(getBaseFragmentActivity(), QMUICommonListItemView.VERTICAL,QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
                 recentAdapter.setOnCommonItemClickListener((v,position)->{
                     viewModel.setNeighbor(viewModel.loadUser(recentList.get(position).getNeighbor()));
                     startFragment(new ChatFragment());

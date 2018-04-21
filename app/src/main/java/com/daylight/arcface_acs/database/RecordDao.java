@@ -18,6 +18,9 @@ import java.util.List;
 public interface RecordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Record... records);
-    @Query("Select * from record_table where account=:account order by rid desc")
+    @Query("Select * from record_table where account=:account order by time desc")
     List<Record> getRecords(String account);
+    @Query("Select * from record_table where account in " +
+            "(select account from user_table where communityName=:communityName) order by time desc")
+    List<Record> getCommunityRecords(String communityName);
 }

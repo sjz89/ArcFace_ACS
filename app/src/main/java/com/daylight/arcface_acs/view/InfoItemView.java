@@ -25,6 +25,7 @@ public class InfoItemView extends QMUICommonListItemView {
     public InfoItemView(Context context) {
         super(context);
     }
+
     public InfoItemView(Context context,byte[] drawable,CharSequence titleText, String detailText, int orientation, int accessoryType){
         super(context);
         int height;
@@ -43,6 +44,7 @@ public class InfoItemView extends QMUICommonListItemView {
         setDetailText(detailText);
         setAccessoryType(accessoryType);
     }
+
     public InfoItemView(Context context,byte[] drawable){
         super(context);
         RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -58,20 +60,24 @@ public class InfoItemView extends QMUICommonListItemView {
         setDetailText(null);
         setAccessoryType(ACCESSORY_TYPE_NONE);
     }
+
     public void setImageDrawable(byte[] imagePath){
         GlideApp.with(this).asBitmap().load(imagePath).override(240,240).into(mImageView);
         mImageView.setVisibility(VISIBLE);
     }
+
     public void setImageDrawable(byte[] imagePath,int width,int height){
         GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
                 QMUIDisplayHelper.dpToPx(height)).into(mImageView);
         mImageView.setVisibility(VISIBLE);
     }
+
     public void setImageDrawable(String imagePath,int width,int height){
         GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
                 QMUIDisplayHelper.dpToPx(height)).into(mImageView);
         mImageView.setVisibility(VISIBLE);
     }
+
     public void setImageDrawable(int imagePath,int width,int height){
         GlideApp.with(this).asBitmap().load(imagePath).override(QMUIDisplayHelper.dpToPx(width),
                 QMUIDisplayHelper.dpToPx(height)).into(mImageView);

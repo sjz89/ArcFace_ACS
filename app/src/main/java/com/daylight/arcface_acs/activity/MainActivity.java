@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.daylight.arcface_acs.app.MessageService;
+import com.daylight.arcface_acs.fragment.MainFragment;
 import com.daylight.arcface_acs.fragment.OwnerFragment;
 import com.daylight.arcface_acs.viewmodel.UserViewModel;
 import com.daylight.arcface_acs.fragment.BaseFragment;
@@ -34,7 +35,8 @@ public class MainActivity extends QMUIFragmentActivity implements ServiceConnect
         UserViewModel viewModel= ViewModelProviders.of(this).get(UserViewModel.class);
         viewModel.setUser(SharedPreferencesUtil.getAccount(this));
         if (savedInstanceState==null){
-            BaseFragment fragment=new OwnerFragment();
+            BaseFragment fragment=viewModel.loadUser(SharedPreferencesUtil.getAccount(this))
+                    .isManager()?new MainFragment():new OwnerFragment();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(getContextViewId(),fragment,fragment.getClass().getSimpleName())

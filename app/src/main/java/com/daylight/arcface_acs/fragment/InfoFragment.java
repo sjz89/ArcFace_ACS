@@ -94,14 +94,14 @@ public class InfoFragment extends BaseFragment {
             }
         });
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        viewModel.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+        viewModel.setAccount(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         viewModel.getAllFaces().observe(this,faces -> {
             if (faces != null&&faces.size()!=0) {
                 face=faces.get(0);
                 features=viewModel.getFeatures(face.getId());
             }
         });
-        user = userViewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
+        user = userViewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         if (user.getStatus() == Values.AVAILABLE) {
             title = "用户信息";
         } else {

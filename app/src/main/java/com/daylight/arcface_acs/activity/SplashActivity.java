@@ -101,61 +101,70 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             } else{
                 if (user.getPassword().equals(EncryptUtil.shaEncrypt(SharedPreferencesUtil.getPassword(SplashActivity.this)))) {
-                    Call<String> login = viewModel.getHttpApi().login(user.getPhoneNum(),
-                            user.getPassword(),true);
-                    login.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response.body());
-                                if (jsonObject.getBoolean("flag")) {
-                                    //todo 获取账号信息
-                                    Call<String> getUserInfo=viewModel.getHttpApi().getUserInfo();
-                                    getUserInfo.enqueue(new Callback<String>() {
-                                        @Override
-                                        public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                                            try {
-                                                JSONObject jsonObject1=new JSONObject(response.body());
-                                                user.setName(jsonObject1.getString("name"));
-                                                user.setCommunityName(jsonObject1.getString("communityName"));
-                                                user.setBuildingName(jsonObject1.getString("buildingName"));
-                                                user.setDoorNum(jsonObject1.getString("num"));
-                                                user.setIdNum(jsonObject1.getString("idnumber"));
-                                                user.setStatus(jsonObject1.getInt("status"));
-                                                viewModel.update(user);
-                                                viewModel.updateRecords();
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
+                    if (user.isHasPatternLock()) {
+                        Intent intent = new Intent(SplashActivity.this, LockActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                                        @Override
-                                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-
-                                        }
-                                    });
-                                    if (user.isHasPatternLock()) {
-                                        Intent intent=new Intent(SplashActivity.this,LockActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }else {
-                                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                } else {
-                                    onFailedShow();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                            onFailedShow();
-                        }
-                    });
+//                    Call<String> login = viewModel.getHttpApi().login(user.getPhoneNum(),
+//                            user.getPassword(),true);
+//                    login.enqueue(new Callback<String>() {
+//                        @Override
+//                        public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+//                            try {
+//                                JSONObject jsonObject = new JSONObject(response.body());
+//                                if (jsonObject.getBoolean("flag")) {
+//                                    Call<String> getUserInfo=viewModel.getHttpApi().getUserInfo();
+//                                    getUserInfo.enqueue(new Callback<String>() {
+//                                        @Override
+//                                        public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+//                                            try {
+//                                                JSONObject jsonObject1=new JSONObject(response.body());
+//                                                user.setName(jsonObject1.getString("name"));
+//                                                user.setCommunityName(jsonObject1.getString("communityName"));
+//                                                user.setBuildingName(jsonObject1.getString("buildingName"));
+//                                                user.setDoorNum(jsonObject1.getString("num"));
+//                                                user.setIdNum(jsonObject1.getString("idnumber"));
+//                                                user.setStatus(jsonObject1.getInt("status"));
+//                                                viewModel.update(user);
+//                                                viewModel.updateRecords();
+//                                            } catch (JSONException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//
+//                                        }
+//                                    });
+//                                    if (user.isHasPatternLock()) {
+//                                        Intent intent=new Intent(SplashActivity.this,LockActivity.class);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }else {
+//                                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }
+//                                } else {
+//                                    onFailedShow();
+//                                }
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//                            onFailedShow();
+//                        }
+//                    });
                 }else{
                     onFailedShow();
                 }

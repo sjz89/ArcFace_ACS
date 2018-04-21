@@ -57,7 +57,7 @@ public class ExpressFragment extends BaseFragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getBaseFragmentActivity(),DividerItemDecoration.VERTICAL));
-        CommonAdapter adapter=new CommonAdapter(getContext(), QMUICommonListItemView.VERTICAL,true);
+        CommonAdapter adapter=new CommonAdapter(getContext(), QMUICommonListItemView.VERTICAL,QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
         recyclerView.setAdapter(adapter);
         adapter.setData(initData());
     }

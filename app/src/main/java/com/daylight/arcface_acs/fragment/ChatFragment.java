@@ -47,7 +47,7 @@ public class ChatFragment extends BaseFragment {
         viewModel= ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
         faceViewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
         neighbor=viewModel.getNeighbor();
-        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
+        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         viewModel.getMessages().observe(this,messages -> {
             if (messages!=null&&messages.size()!=0){
                 adapter.setData(messages);

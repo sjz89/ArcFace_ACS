@@ -34,6 +34,10 @@ public class PropertyFragment extends BaseFragment {
 
     private void initGroupListView(){
         GroupListView groupListView=view.findViewById(R.id.groupList_property);
+        QMUICommonListItemView call=new InfoItemView(getContext(),null,"呼叫物业",null,
+                QMUICommonListItemView.HORIZONTAL,QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        ((InfoItemView)call).setImageDrawable(R.drawable.ic_call_blue,36,36);
+
         QMUICommonListItemView payment=new InfoItemView(getContext(),null,"物业缴费",null,
                 QMUICommonListItemView.HORIZONTAL,QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
         ((InfoItemView)payment).setImageDrawable(R.drawable.ic_pay,36,36);
@@ -46,8 +50,17 @@ public class PropertyFragment extends BaseFragment {
                 QMUICommonListItemView.HORIZONTAL,QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON );
         ((InfoItemView)feedback).setImageDrawable(R.drawable.ic_feedback,36,36);
 
-        View.OnClickListener listener=v -> {};
+        View.OnClickListener listener=v -> {
+            if (v instanceof QMUICommonListItemView){
+                switch (((QMUICommonListItemView) v).getText().toString()){
+                    case "呼叫物业":
+                        startFragment(new ContactsFragment());
+                        break;
+                }
+            }
+        };
         GroupListView.newSection(getContext())
+                .addItemView(call,listener)
                 .addItemView(payment,listener)
                 .addItemView(waterSending,listener)
                 .addItemView(feedback,listener)

@@ -14,7 +14,6 @@ import com.daylight.arcface_acs.database.UserRepository;
 import com.daylight.arcface_acs.http.HttpApi;
 import com.daylight.arcface_acs.http.RetrofitInstance;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
-import com.daylight.arcface_acs.utils.DateUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -144,5 +143,13 @@ public class UserViewModel extends AndroidViewModel {
 
     public List<Record> getRecords(String account){
         return userRepository.getRecords(account);
+    }
+
+    public List<Record> getCommunityRecords(String communityName){
+        return userRepository.getCommunityRecords(communityName);
+    }
+
+    public LiveData<List<User>> getUsers(String communityName){
+        return userRepository.getUsers(communityName);
     }
 }

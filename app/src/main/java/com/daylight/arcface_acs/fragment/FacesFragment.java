@@ -59,7 +59,7 @@ public class FacesFragment extends BaseFragment{
         initPullRefreshLayout();
         initRecyclerView();
         viewModel= ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        viewModel.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+        viewModel.setAccount(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         viewModel.getAllFaces().observe(this,faces -> {
             mAdapter.setFaces(faces);
             mFaces=faces;
@@ -72,7 +72,7 @@ public class FacesFragment extends BaseFragment{
         });
         RxBusHelper.doOnMainThread(Uri.class,uri -> {
             Face face=new Face();
-            face.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+            face.setAccount(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
             viewModel.setFace(face);
             viewModel.setNew(true);
             String file=uri.getPath();
@@ -112,7 +112,7 @@ public class FacesFragment extends BaseFragment{
             @Override
             public void onFootClick(View view) {
                 Face face=new Face();
-                face.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+                face.setAccount(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
                 viewModel.setFace(face);
                 viewModel.setNew(true);
                 viewModel.setMid(0);

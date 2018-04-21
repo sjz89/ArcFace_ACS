@@ -19,7 +19,7 @@ import com.daylight.arcface_acs.bean.User;
  *
  * Created by Daylight on 2018/1/26.
  */
-@Database(entities = {User.class, Face.class, Feature.class, Record.class, ChatMessage.class, Recent.class}, version = 5,exportSchema = false)
+@Database(entities = {User.class, Face.class, Feature.class, Record.class, ChatMessage.class, Recent.class}, version = 7,exportSchema = false)
 public abstract class UserDataBase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract FaceDao faceDao();
@@ -33,14 +33,14 @@ public abstract class UserDataBase extends RoomDatabase {
             synchronized (UserDataBase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            UserDataBase.class, "user_database").addMigrations(MIGRATION_4_5)
+                            UserDataBase.class, "user_database").addMigrations(MIGRATION_6_7)
                             .build();
                 }
             }
         }
         return INSTANCE;
     }
-    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+    private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 //            database.execSQL("CREATE TABLE `recent_table` (\n" +
@@ -56,7 +56,7 @@ public abstract class UserDataBase extends RoomDatabase {
 //            database.execSQL("CREATE INDEX `index_recent_table_account` on `recent_table`(`account`)");
 //            database.execSQL("CREATE INDEX `index_recent_table_neighbor` on `recent_table`(`neighbor`)");
 //            database.execSQL("CREATE UNIQUE INDEX `index_recent_table_uniqueId` on `recent_table`(`uniqueId`)");
-            database.execSQL("ALTER TABLE `record_table` ADD COLUMN `time` INTEGER");
+            database.execSQL("ALTER TABLE `user_table` ADD COLUMN `isSecurity` INTEGER NOT NULL DEFAULT 0");
         }
     };
 }

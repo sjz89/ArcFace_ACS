@@ -41,6 +41,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,84 +117,93 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
                     if (validInput()) {
                         loginAnim();
                         new Handler().postDelayed(() -> {
-                            Call<String> login=viewModel.getHttpApi().login(account.getText().toString(),
-                                    EncryptUtil.shaEncrypt(password.getText().toString()),true);
-                            login.enqueue(new Callback<String>() {
-                                @Override
-                                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                                    try {
-                                        JSONObject jsonObject=new JSONObject(response.body());
-                                        if (jsonObject.getBoolean("flag")){
-                                            //todo 获取账号信息
-                                            Call<String> getUserInfo=viewModel.getHttpApi().getUserInfo();
-                                            getUserInfo.enqueue(new Callback<String>() {
-                                                @Override
-                                                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                                                    try {
-                                                        JSONObject jsonObject1 = new JSONObject(response.body());
-                                                        User user = viewModel.loadUser(account.getText().toString());
-                                                        if (user == null) {
-                                                            user = new User();
-                                                            user.setPhoneNum(account.getText().toString());
-                                                            user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
-                                                        }
-                                                        user.setName(jsonObject1.getString("name"));
-                                                        user.setCommunityName(jsonObject1.getString("communityName"));
-                                                        user.setBuildingName(jsonObject1.getString("buildingName"));
-                                                        user.setDoorNum(jsonObject1.getString("num"));
-                                                        user.setIdNum(jsonObject1.getString("idnumber"));
-                                                        user.setStatus(jsonObject1.getInt("status"));
-                                                        viewModel.insert(user);
-                                                    } catch (JSONException e) {
-                                                        User user = viewModel.loadUser(account.getText().toString());
-                                                        if (user == null) {
-                                                            user = new User();
-                                                            user.setPhoneNum(account.getText().toString());
-                                                            user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
-                                                        }
-                                                        viewModel.insert(user);
-                                                    }
-                                                }
+                            if (accounts.contains(account.getText().toString()) &&
+                                    Objects.equals(EncryptUtil.shaEncrypt(password.getText().toString()),
+                                            viewModel.loadUser(account.getText().toString()).getPassword())) {
+                                SharedPreferencesUtil.setAccount(getBaseFragmentActivity(), account.getText().toString());
+                                SharedPreferencesUtil.setPassword(getBaseFragmentActivity(), password.getText().toString());
+                                Intent intent = new Intent(getBaseFragmentActivity(), MainActivity.class);
+                                startActivity(intent);
+                                getBaseFragmentActivity().finish();
+                            }
 
-                                                @Override
-                                                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-
-                                                }
-                                            });
-                                            SharedPreferencesUtil.setAccount(getBaseFragmentActivity(),account.getText().toString());
-                                            SharedPreferencesUtil.setPassword(getBaseFragmentActivity(),password.getText().toString());
-                                            viewModel.updateRecords();
-                                            Intent intent = new Intent(getBaseFragmentActivity(), MainActivity.class);
-                                            startActivity(intent);
-                                            getBaseFragmentActivity().finish();
-                                        }else{
-                                            recovery();
-                                            mBtnLogin.setText(R.string.login);
-                                            mBtnLogin.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha));
-                                            QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
-                                                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                                                    .setTipWord("登陆失败")
-                                                    .create(true);
-                                            tipDialog.show();
-                                            new Handler().postDelayed(tipDialog::dismiss,1000);
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                @Override
-                                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                                    recovery();
-                                    mBtnLogin.setText(R.string.login);
-                                    mBtnLogin.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha));
-                                    QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
-                                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                                            .setTipWord("登陆失败")
-                                            .create(true);
-                                    tipDialog.show();
-                                    new Handler().postDelayed(tipDialog::dismiss,1000);
-                                }
-                            });
+//                            Call<String> login=viewModel.getHttpApi().login(account.getText().toString(),
+//                                    EncryptUtil.shaEncrypt(password.getText().toString()),true);
+//                            login.enqueue(new Callback<String>() {
+//                                @Override
+//                                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+//                                    try {
+//                                        JSONObject jsonObject=new JSONObject(response.body());
+//                                        if (jsonObject.getBoolean("flag")){
+//                                            Call<String> getUserInfo=viewModel.getHttpApi().getUserInfo();
+//                                            getUserInfo.enqueue(new Callback<String>() {
+//                                                @Override
+//                                                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+//                                                    try {
+//                                                        JSONObject jsonObject1 = new JSONObject(response.body());
+//                                                        User user = viewModel.loadUser(account.getText().toString());
+//                                                        if (user == null) {
+//                                                            user = new User();
+//                                                            user.setPhoneNum(account.getText().toString());
+//                                                            user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
+//                                                        }
+//                                                        user.setName(jsonObject1.getString("name"));
+//                                                        user.setCommunityName(jsonObject1.getString("communityName"));
+//                                                        user.setBuildingName(jsonObject1.getString("buildingName"));
+//                                                        user.setDoorNum(jsonObject1.getString("num"));
+//                                                        user.setIdNum(jsonObject1.getString("idnumber"));
+//                                                        user.setStatus(jsonObject1.getInt("status"));
+//                                                        viewModel.insert(user);
+//                                                    } catch (JSONException e) {
+//                                                        User user = viewModel.loadUser(account.getText().toString());
+//                                                        if (user == null) {
+//                                                            user = new User();
+//                                                            user.setPhoneNum(account.getText().toString());
+//                                                            user.setPassword(EncryptUtil.shaEncrypt(password.getText().toString()));
+//                                                        }
+//                                                        viewModel.insert(user);
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//
+//                                                }
+//                                            });
+//                                            SharedPreferencesUtil.setAccount(getBaseFragmentActivity(),account.getText().toString());
+//                                            SharedPreferencesUtil.setPassword(getBaseFragmentActivity(),password.getText().toString());
+//                                            viewModel.updateRecords();
+//                                            Intent intent = new Intent(getBaseFragmentActivity(), MainActivity.class);
+//                                            startActivity(intent);
+//                                            getBaseFragmentActivity().finish();
+//                                        }else{
+//                                            recovery();
+//                                            mBtnLogin.setText(R.string.login);
+//                                            mBtnLogin.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha));
+//                                            QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
+//                                                    .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+//                                                    .setTipWord("登陆失败")
+//                                                    .create(true);
+//                                            tipDialog.show();
+//                                            new Handler().postDelayed(tipDialog::dismiss,1000);
+//                                        }
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                                @Override
+//                                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+//                                    recovery();
+//                                    mBtnLogin.setText(R.string.login);
+//                                    mBtnLogin.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha));
+//                                    QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
+//                                            .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+//                                            .setTipWord("登陆失败")
+//                                            .create(true);
+//                                    tipDialog.show();
+//                                    new Handler().postDelayed(tipDialog::dismiss,1000);
+//                                }
+//                            });
                         }, 2000);
                     }
                 } else if (mBtnLogin.getText().equals(getResources().getString(R.string.cancel))) {

@@ -33,7 +33,7 @@ import java.util.List;
  * Created by Daylight on 2018/3/18.
  */
 
-public class RecordFragment extends BaseFragment {
+public class PassRecordFragment extends BaseFragment {
     private View view;
     private UserViewModel viewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -43,7 +43,7 @@ public class RecordFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
-        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
+        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         RxBusHelper.doOnMainThread(Integer.class, integer -> {
             if (swipeRefreshLayout.isRefreshing())
                 swipeRefreshLayout.setRefreshing(false);
@@ -57,7 +57,7 @@ public class RecordFragment extends BaseFragment {
     @SuppressLint("InflateParams")
     @Override
     protected View onCreateView() {
-        view= LayoutInflater.from(getContext()).inflate(R.layout.fragment_record,null);
+        view= LayoutInflater.from(getContext()).inflate(R.layout.fragment_passrecord,null);
         initTopBar();
         initPullRefreshLayout();
         initRecyclerView();
@@ -79,7 +79,11 @@ public class RecordFragment extends BaseFragment {
 
     private void initData(){
         List<CommonData> data=new ArrayList<>();
-        List<Record> records=viewModel.getRecords(user.getPhoneNum());
+        List<Record> records;
+        if (!user.isManager())
+            records=viewModel.getRecords(user.getPhoneNum());
+        else
+            records=viewModel.getCommunityRecords(user.getCommunityName());
         if (records!=null&&records.size()!=0) {
             for (Record record : records) {
                 CommonData commonData=new CommonData(record.getText(),record.getSubText());
@@ -97,7 +101,7 @@ public class RecordFragment extends BaseFragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getBaseFragmentActivity(),DividerItemDecoration.VERTICAL));
-        adapter=new CommonAdapter(getContext(), QMUICommonListItemView.VERTICAL,true);
+        adapter=new CommonAdapter(getContext(), QMUICommonListItemView.VERTICAL,QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
         recyclerView.setAdapter(adapter);
     }
 }

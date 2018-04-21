@@ -59,6 +59,15 @@ public class FaceRepository {
         return null;
     }
 
+    public List<Face> getFaces(){
+        try {
+            return new loadFacesAsyncTask(faceDao).execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Feature> getFeatures(Long faceId){
         try {
             return new featureQuery(featureDao).execute(faceId).get();
@@ -171,4 +180,15 @@ public class FaceRepository {
         }
     }
 
+    private static class loadFacesAsyncTask extends AsyncTask<Void,Void,List<Face>>{
+        private FaceDao mAsyncTaskDao;
+        loadFacesAsyncTask(FaceDao dao){
+            mAsyncTaskDao=dao;
+        }
+
+        @Override
+        protected List<Face> doInBackground(Void... voids) {
+            return mAsyncTaskDao.getFaces();
+        }
+    }
 }

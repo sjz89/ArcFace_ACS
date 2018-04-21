@@ -96,6 +96,10 @@ public class FaceViewModel extends AndroidViewModel {
         return mAllFaces;
     }
 
+    public List<Face> getFaces(){
+        return mRepository.getFaces();
+    }
+
     public void insert(Face face){
         mRepository.insert(face);
     }

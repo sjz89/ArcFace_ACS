@@ -14,11 +14,9 @@ public class CommonData{
     private String text;
     private String subText;
     private String time;
-    private boolean isNew;
     public CommonData(String... data){
         this.text=data[0];
         this.subText=data[1];
-        isNew = data.length >= 3 && data[2].equals("new");
     }
 
     public void setImage(byte[] image) {
@@ -45,14 +43,6 @@ public class CommonData{
         return subText;
     }
 
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
-    }
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -74,7 +64,6 @@ public class CommonData{
     }
 
     public int getIcon() {
-
         return icon;
     }
 }

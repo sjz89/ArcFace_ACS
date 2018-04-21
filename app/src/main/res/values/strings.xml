@@ -46,4 +46,12 @@
     <string name="send">Send</string>
     <string name="board">Board</string>
     <string name="news">News</string>
+    <string name="verify">Verify</string>
+    <string name="sign_record">Sign Record</string>
+    <string name="security">Security Level</string>
+    <string name="warning">Warning Message</string>
+    <string name="temporary">Temporary Person</string>
+    <string name="preset_type">Preset Type</string>
+    <string name="contacts">Contacts</string>
+    <string name="add_face_title">Face Recognized</string>
 </resources>

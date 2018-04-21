@@ -46,4 +46,12 @@
     <string name="send">发送</string>
     <string name="board">公告</string>
     <string name="news">通知</string>
+    <string name="verify">业主审核</string>
+    <string name="sign_record">考勤记录</string>
+    <string name="security">安全级别</string>
+    <string name="warning">预警信息</string>
+    <string name="temporary">临时人员</string>
+    <string name="preset_type">预设选项</string>
+    <string name="contacts">联系人</string>
+    <string name="add_face_title">识别到人脸</string>
 </resources>

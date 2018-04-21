@@ -4,57 +4,56 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.daylight.arcface_acs.R;
+import com.daylight.arcface_acs.adapter.ImagePagerAdapter;
+import com.daylight.arcface_acs.adapter.MainItemAdapter;
+import com.daylight.arcface_acs.bean.MainItemData;
 import com.daylight.arcface_acs.viewmodel.UserViewModel;
 import com.daylight.arcface_acs.Values;
 import com.daylight.arcface_acs.bean.User;
 import com.daylight.arcface_acs.dialog.PinLockDialog;
 import com.daylight.arcface_acs.rxbus.RxBusHelper;
 import com.daylight.arcface_acs.utils.SharedPreferencesUtil;
-import com.qmuiteam.qmui.util.QMUIResHelper;
-import com.qmuiteam.qmui.widget.QMUITabSegment;
+import com.github.demono.AutoScrollViewPager;
+import com.qmuiteam.qmui.widget.QMUICollapsingTopBarLayout;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFragment extends BaseFragment {
 
-    private View root;
-    private QMUITabSegment tabSegment;
-
-    private CharSequence[] titles;
-    private HashMap<Pager,BaseFragment> mPages;
+    private View view;
+    private AutoScrollViewPager viewPager;
     private User user;
+    private UserViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserViewModel viewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
-        user= viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
-
+        viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
+        user= viewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         viewModel.getUser().observe(getBaseFragmentActivity(),user1 -> {
             if (user1!=null) {
                 user = user1;
-                if (user.getStatus()==Values.UNREGISTER){
+                SharedPreferencesUtil.setPin(getBaseFragmentActivity(),user.getPin());
+                if (user.getStatus()== Values.UNREGISTER){
                     QMUIDialog mDialog=new QMUIDialog.MessageDialogBuilder(getBaseFragmentActivity())
                             .setTitle("提示")
                             .setMessage("您的账号还未被完善信息，请先去完善信息")
-                            .addAction(new QMUIDialogAction(getContext(), "退出", (dialog, index) -> {
+                            .addAction("退出", (dialog, index) -> {
                                 dialog.dismiss();
                                 popBackStack();
-                            }))
-                            .addAction(new QMUIDialogAction(getContext(),"完善信息",((dialog, index) -> {
+                            })
+                            .addAction("完善信息",((dialog, index) -> {
                                 startFragment(new InfoFragment());
                                 dialog.dismiss();
-                            })))
+                            }))
                             .create();
                     mDialog.setCancelable(false);
                     mDialog.setCanceledOnTouchOutside(false);
@@ -63,105 +62,130 @@ public class MainFragment extends BaseFragment {
             }
         });
     }
-
     @SuppressLint("InflateParams")
     @Override
     protected View onCreateView() {
-        root= LayoutInflater.from(getActivity()).inflate(R.layout.fragment_main,null);
-        initTitles();
-        initTabs();
-        initPagers();
-        return root;
+        view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_owner,null);
+        initTopBar();
+        initViewPage();
+        initRecyclerView();
+        RxBusHelper.doOnChildThread(User.class, user1 -> viewModel.update(user1));
+        RxBusHelper.doOnMainThread(String.class,msg -> new QMUIDialog.MessageDialogBuilder(getContext())
+                .setTitle("AEye小助手")
+                .setMessage("\u3000\u3000"+msg)
+                .addAction("不了",((dialog, index) -> dialog.dismiss()))
+                .addAction("好的",((dialog, index) -> dialog.dismiss()))
+                .show());
+        return view;
     }
 
-    private void initTitles(){
-        titles=new String[3];
-        titles[0]=getResources().getString(R.string.title_unlock);
-        titles[1]=getResources().getString(R.string.title_faces);
-        titles[2]=getResources().getString(R.string.title_setting);
-    }
-    @SuppressWarnings("ConstantConditions")
-    private void initTabs() {
-        tabSegment=root.findViewById(R.id.tabs);
-        int normalColor = QMUIResHelper.getAttrColor(getActivity(), R.attr.qmui_config_color_gray_6);
-        int selectColor = QMUIResHelper.getAttrColor(getActivity(), R.attr.qmui_config_color_blue);
-        tabSegment.setDefaultNormalColor(normalColor);
-        tabSegment.setDefaultSelectedColor(selectColor);
-
-        QMUITabSegment.Tab unlock = new QMUITabSegment.Tab(
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_component),
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_component_selected),
-                titles[0], false
-        );
-
-        QMUITabSegment.Tab faces = new QMUITabSegment.Tab(
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_util),
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_util_selected),
-                titles[1], false
-        );
-        QMUITabSegment.Tab me = new QMUITabSegment.Tab(
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_lab),
-                ContextCompat.getDrawable(getContext(), R.mipmap.icon_tabbar_lab_selected),
-                titles[2], false
-        );
-        tabSegment.addTab(unlock)
-                .addTab(faces)
-                .addTab(me);
-    }
-
-    private void initPagers() {
-        ViewPager mViewPager=root.findViewById(R.id.pager);
-
-        mPages=new HashMap<>();
-        BaseFragment unlockFragment=new UnlockFragment();
-        mPages.put(Pager.UNLOCK,unlockFragment);
-        BaseFragment facesFragment=new FacesFragment();
-        mPages.put(Pager.FACES,facesFragment);
-        BaseFragment settingFragment=new SettingFragment();
-        mPages.put(Pager.SETTING,settingFragment);
-
-        FragmentPagerAdapter mPageAdapter=new FragmentPagerAdapter(getFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return mPages.get(Pager.getPagerFromPosition(position));
-            }
-
-            @Override
-            public int getCount() {
-                return mPages.size();
-            }
-        };
-
-        mViewPager.setAdapter(mPageAdapter);
-        tabSegment.setupWithViewPager(mViewPager,false);
-
-        RxBusHelper.doOnMainThread(Integer.class, integer -> {
-            if (integer==Values.GO_TO_SET_PIN){
-                mViewPager.setCurrentItem(2,false);
-                new PinLockDialog(getContext(),user).setPin();
-            }
+    private void initTopBar(){
+        QMUICollapsingTopBarLayout mCollapsingTopBarLayout = view.findViewById(R.id.collapsing_topbar_layout);
+        mCollapsingTopBarLayout.setTitle("AEye");
+        mCollapsingTopBarLayout.setExpandedTitleColor(getBaseFragmentActivity().getResources().getColor(R.color.transparent));
+        mCollapsingTopBarLayout.setScrimUpdateListener(animation -> {
+            if (animation.getAnimatedValue().equals(0))
+                viewPager.startAutoScroll();
+            else
+                viewPager.stopAutoScroll();
         });
     }
 
-    enum Pager {
-        UNLOCK, FACES, SETTING;
+    private void initViewPage(){
+        viewPager=view.findViewById(R.id.viewPager);
+        ImagePagerAdapter adapter=new ImagePagerAdapter(getContext());
+        List<String> data=new ArrayList<>();
+        data.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1521465414314&di=30bff1fb7c930b3ccfe059daab1774b7&imgtype=0&src=http%3A%2F%2Fpic27.nipic.com%2F20130220%2F4499633_175555660355_2.jpg");
+        data.add("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1521465486388&di=feb117aaa6b75df40a16c9a611256f45&imgtype=0&src=http%3A%2F%2Fimgs.focus.cn%2Fupload%2Fbj%2F6830%2Fb_68290470.jpg");
+        data.add("http://imgsrc.baidu.com/imgad/pic/item/4b90f603738da97734fa5c06bb51f8198718e3c2.jpg");
+        adapter.setData(data);
+        adapter.setOnPageClickListener((v,position)->startFragment(new NewsFragment()));
+        viewPager.setAdapter(adapter);
+        viewPager.startAutoScroll();
+    }
 
-        public static Pager getPagerFromPosition(int position) {
-            switch (position) {
-                case 0:
-                    return UNLOCK;
-                case 1:
-                    return FACES;
-                case 2:
-                    return SETTING;
-                default:
-                    return UNLOCK;
-            }
+    private List<MainItemData> initData(){
+        List<MainItemData> data=new ArrayList<>();
+        data.add(new MainItemData("拨号",R.drawable.ic_call));
+        if (!user.isSecurity()) {
+            data.add(new MainItemData("业主审核", R.drawable.ic_profile_addfrie));
+            data.add(new MainItemData("安全级别", R.drawable.ic_shield));
         }
+        data.add(new MainItemData("临时人员",R.drawable.ic_profile_groupfr));
+        data.add(new MainItemData("一键开门",R.drawable.ic_lock_unlock));
+        data.add(new MainItemData("预警信息",R.drawable.ic_warning));
+        data.add(new MainItemData("考勤记录",R.drawable.ic_document_80));
+        data.add(new MainItemData("通行记录",R.drawable.ic_time_oclock));
+        data.add(new MainItemData("设置",R.drawable.ic_setting_cog));
+        return data;
+    }
+
+    private void initRecyclerView(){
+        RecyclerView recyclerView=view.findViewById(R.id.recyclerView);
+        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),3);
+        recyclerView.setLayoutManager(layoutManager);
+        MainItemAdapter adapter=new MainItemAdapter(getContext(),initData());
+        adapter.setOnItemClickListener((view, position) -> {
+            switch ((String)view.getTag()) {
+                case "一键开门":
+                    if (user.getPin()!=null) {
+                        new QMUIDialog.MenuDialogBuilder(getContext())
+                                .setTitle("请选择要开启的门禁")
+                                .addItems(new String[]{"北门(进口)","北门(出口)","南门(进口)","南门(出口)",
+                                        "东门(进口)","东门(出口)","西门(进口)","西门(出口)","所有大门"},
+                                        (dialog,position1)->{
+                                            dialog.dismiss();
+                                            PinLockDialog passwordInput = new PinLockDialog(getContext(),user);
+                                            passwordInput.verifyPin();
+                                        }).show();
+                    } else {
+                        new QMUIDialog.MessageDialogBuilder(getContext())
+                                .setMessage("您还没设置开门密码，请先前往设置")
+                                .addAction("取消", (dialog, index) -> dialog.dismiss())
+                                .addAction("前往设置", (dialog, index) -> {
+                                    dialog.dismiss();
+                                    new PinLockDialog(getContext(),user).setPin();
+                                })
+                                .show();
+                    }
+                    break;
+                case "考勤记录":
+                    startFragment(new SignRecordFragment());
+                    break;
+                case "通行记录":
+                    startFragment(new PassRecordFragment());
+                    break;
+                case "业主审核":
+                    startFragment(new VerifyFragment());
+                    break;
+                case "安全级别":
+                    startFragment(new SecurityFragment());
+                    break;
+                case "预警信息":
+                    startFragment(new WarningFragment());
+                    break;
+                case "拨号":
+                    startFragment(new ContactsFragment());
+                    break;
+                case "临时人员":
+                    startFragment(new TemporaryFragment());
+                    break;
+                case "设置":
+                    startFragment(new SettingFragment());
+                    break;
+            }
+        });
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     protected boolean canDragBack() {
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        viewPager.stopAutoScroll();
+        super.onDestroy();
     }
 }

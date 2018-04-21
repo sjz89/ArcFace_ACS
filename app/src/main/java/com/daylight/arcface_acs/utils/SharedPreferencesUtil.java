@@ -56,4 +56,13 @@ public class SharedPreferencesUtil {
         SharedPreferences sp=context.getSharedPreferences(Values.USER,Context.MODE_PRIVATE);
         return sp.getString("pin","");
     }
+    public static void setLevel(Context context,int level){
+        SharedPreferences.Editor spe=context.getSharedPreferences(Values.NUMBER,Context.MODE_PRIVATE).edit();
+        spe.putInt("level",level);
+        spe.apply();
+    }
+    public static int getLevel(Context context){
+        SharedPreferences sp=context.getSharedPreferences(Values.NUMBER,Context.MODE_PRIVATE);
+        return sp.getInt("level",0);
+    }
 }

@@ -35,4 +35,6 @@ public interface UserDao {
     User loadUser(String account);
     @Query("Select phoneNum from user_table")
     LiveData<List<String>> getAccounts();
+    @Query("Select * from user_table where communityName=:community And isManager=0")
+    LiveData<List<User>> getUsers(String community);
 }

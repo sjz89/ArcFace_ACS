@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="main" type="id"/>
+    <item name="main2" type="id"/>
     <item name="lock" type="id"/>
     <item name="login" type="id"/>
     <item name="intent" type="id"/>

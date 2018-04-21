@@ -1,6 +1,5 @@
 package com.daylight.arcface_acs.utils;
 
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,10 +11,9 @@ import java.util.Locale;
  */
 
 public class DateUtil {
-    public static Date strToDate(String strDate) {
+    public static String dateToStr(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        ParsePosition pos = new ParsePosition(0);
-        return formatter.parse(strDate, pos);
+        return formatter.format(date);
     }
     public static String longToString(Long time){
         Date date=new Date(time);
@@ -50,5 +48,10 @@ public class DateUtil {
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(date);
         return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+    public static int getWeek(Date date){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 }

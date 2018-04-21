@@ -56,9 +56,22 @@ public class UserRepository {
         return null;
     }
 
+    public LiveData<List<User>> getUsers(String communityName){
+        return userDao.getUsers(communityName);
+    }
+
     public List<Record> getRecords(String account){
         try {
             return new loadRecordsAsyncTask(recordDao).execute(account).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Record> getCommunityRecords(String communityName){
+        try {
+            return new loadCommunityRecordsAsyncTask(recordDao).execute(communityName).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -144,6 +157,17 @@ public class UserRepository {
         @Override
         protected List<Record> doInBackground(String... strings) {
             return mAsyncTaskDao.getRecords(strings[0]);
+        }
+    }
+
+    private static class loadCommunityRecordsAsyncTask extends AsyncTask<String,Void,List<Record>>{
+        private RecordDao mAsyncTaskDao;
+        loadCommunityRecordsAsyncTask(RecordDao dao){
+            mAsyncTaskDao=dao;
+        }
+        @Override
+        protected List<Record> doInBackground(String... strings) {
+            return mAsyncTaskDao.getCommunityRecords(strings[0]);
         }
     }
 

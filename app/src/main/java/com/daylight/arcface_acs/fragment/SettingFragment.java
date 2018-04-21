@@ -44,9 +44,9 @@ public class SettingFragment extends BaseFragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(getBaseFragmentActivity()).get(UserViewModel.class);
-        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getContext()));
+        user=viewModel.loadUser(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         faceViewModel=ViewModelProviders.of(getBaseFragmentActivity()).get(FaceViewModel.class);
-        faceViewModel.setAccount(SharedPreferencesUtil.getAccount(getContext()));
+        faceViewModel.setAccount(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()));
         faceViewModel.getAllFaces().observe(this,faces -> {
             if (faces!=null&&info!=null)
                 ((InfoItemView)info).setImageDrawable(faces.get(0).getFaceData());
@@ -72,7 +72,7 @@ public class SettingFragment extends BaseFragment{
         GroupListView mGroupListView=view.findViewById(R.id.groupList_setting);
 
         info = new InfoItemView(getContext(),null,
-                user.getName(),user.getCommunityName()+user.getBuildingName()+user.getDoorNum(),
+                user.getName(),user.isManager()?user.getCommunityName():user.getCommunityName()+user.getBuildingName()+user.getDoorNum(),
                 QMUICommonListItemView.VERTICAL,QMUICommonListItemView.ACCESSORY_TYPE_NONE);
 
         if (faceViewModel.loadFace(user.getPhoneNum()).getFaceData()!=null)
@@ -192,7 +192,7 @@ public class SettingFragment extends BaseFragment{
                                                 .addAction("确定",((dialog1, index1) -> {
                                                     if (dialogBuilder.validPassword()){
                                                         user.setPassword(dialogBuilder.getPassword());
-                                                        SharedPreferencesUtil.setPassword(getContext(),
+                                                        SharedPreferencesUtil.setPassword(getBaseFragmentActivity(),
                                                                 dialogBuilder.getPassword());
                                                         viewModel.update(user);
                                                         dialog1.dismiss();
@@ -211,7 +211,7 @@ public class SettingFragment extends BaseFragment{
                     case "退出登录":
                         user.setHasPatternLock(false);
                         viewModel.update(user);
-                        SharedPreferencesUtil.setPassword(getContext(),"");
+                        SharedPreferencesUtil.setPassword(getBaseFragmentActivity(),"");
                         getBaseFragmentActivity().startActivity(new Intent(getBaseFragmentActivity(), LoginActivity.class));
                         getBaseFragmentActivity().finish();
                         break;

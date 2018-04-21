@@ -24,4 +24,6 @@ public interface FaceDao {
     LiveData<List<Face>> getAllFacesOrderById(String account);
     @Query("Select * From faces_table where account=:account limit 1")
     Face queryFace(String account);
+    @Query("Select * From faces_table ")
+    List<Face> getFaces();
 }

@@ -220,16 +220,16 @@ public class RegisterFragment extends QMUIFragment {
                         }
                         @Override
                         public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-//                            loading.dismiss();
-//                            Feature feature=new Feature();
-//                            feature.setFaceId(face.getId());
-//                            feature.setImageData(imageDate);
-//                            feature.setFeatureData(mAFR_FSDKFace.getFeatureData());
-//                            Message reg = Message.obtain();
-//                            reg.what = MSG_CODE;
-//                            reg.arg1 = MSG_EVENT_REG;
-//                            reg.obj = feature;
-//                            handler.sendMessage(reg);
+                            loading.dismiss();
+                            Feature feature=new Feature();
+                            feature.setFaceId(face.getId());
+                            feature.setImageData(imageDate);
+                            feature.setFeatureData(mAFR_FSDKFace.getFeatureData());
+                            Message reg = Message.obtain();
+                            reg.what = MSG_CODE;
+                            reg.arg1 = MSG_EVENT_REG;
+                            reg.obj = feature;
+                            handler.sendMessage(reg);
                         }
                     });
                     face_bitmap.recycle();
@@ -259,7 +259,6 @@ public class RegisterFragment extends QMUIFragment {
                 if (!viewModel.isNew()) {
                     new AddFaceDialogBuilder(getContext())
                             .setImage(feature.getImageData())
-                            .setTitle("识别到人脸")
                             .addAction(new QMUIDialogAction(getContext(),"取消",((dialog, index) -> {
                                 QMUITipDialog tipDialog=new QMUITipDialog.Builder(getContext()).setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
                                         .setTipWord("取消添加").create();
@@ -308,6 +307,12 @@ public class RegisterFragment extends QMUIFragment {
                                 int type=100;
                                 if (face.getType().equals("访客"))
                                     type=200;
+                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
+                                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                                        .setTipWord("成员注册成功")
+                                        .create(true);
+                                tipDialog.show();
+                                new Handler().postDelayed(tipDialog::dismiss,1000);
                                 viewModel.getHttpApi().faceRegister(SharedPreferencesUtil.getAccount(getBaseFragmentActivity()),
                                         face.getName(),type,face.getIdNum(),/*face.getStartDate(),face.getEndDate(),*/new int[]{0})
                                         .enqueue(new Callback<String>() {
@@ -329,12 +334,11 @@ public class RegisterFragment extends QMUIFragment {
                                             }
                                             @Override
                                             public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
-                                                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
-                                                        .setTipWord("成员注册失败")
-                                                        .create(true);
-                                                tipDialog.show();
-                                                new Handler().postDelayed(tipDialog::dismiss,1000);
+//                                                QMUITipDialog tipDialog=new QMUITipDialog.Builder(getBaseFragmentActivity())
+//                                                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_FAIL)
+//                                                        .setTipWord("成员注册失败")
+//                                                        .create(true);
+//                                                tipDialog.show();
                                             }
                                         });
                                 viewModel.insert(face);

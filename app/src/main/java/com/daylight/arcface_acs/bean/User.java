@@ -21,8 +21,10 @@ public class User {
     private String doorNum;
     private String pattern;
     private String pin;
+    private boolean isManager;
     private boolean authorize;
     private boolean hasPatternLock;
+    private boolean isSecurity;
     private int status;
 
     public Long getId() {
@@ -127,5 +129,21 @@ public class User {
 
     public boolean isAuthorize() {
         return authorize;
+    }
+
+    public void setManager(boolean manager) {
+        isManager = manager;
+    }
+
+    public boolean isManager() {
+        return isManager;
+    }
+
+    public boolean isSecurity() {
+        return isSecurity;
+    }
+
+    public void setSecurity(boolean security) {
+        isSecurity = security;
     }
 }

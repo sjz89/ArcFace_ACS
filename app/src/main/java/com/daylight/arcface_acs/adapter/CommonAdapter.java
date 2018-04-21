@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.daylight.arcface_acs.R;
 import com.daylight.arcface_acs.bean.CommonData;
 import com.daylight.arcface_acs.view.InfoItemView;
-import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 
 import java.util.List;
@@ -26,17 +25,17 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.ViewHolder
     private Context context;
     private List<CommonData> data;
     private int orientation;
-    private boolean showCustomView;
+    private int ACCESSORY_TYPE;
     private OnCommonItemClickListener onCommonItemClickListener;
     public CommonAdapter(Context context, int orientation){
         this.context=context;
         this.orientation=orientation;
-        this.showCustomView =false;
+        this.ACCESSORY_TYPE =QMUICommonListItemView.ACCESSORY_TYPE_NONE;
     }
-    public CommonAdapter(Context context,int orientation,boolean showCustomView){
+    public CommonAdapter(Context context,int orientation,int ACCESSORY_TYPE){
         this.context=context;
         this.orientation=orientation;
-        this.showCustomView =showCustomView;
+        this.ACCESSORY_TYPE =ACCESSORY_TYPE;
     }
     public void setData(List<CommonData> data){
         this.data=data;
@@ -55,14 +54,14 @@ public class CommonAdapter extends RecyclerView.Adapter<CommonAdapter.ViewHolder
             holder.item.setOrientation(orientation);
             holder.item.setText(data.get(position).getText());
             holder.item.setDetailText(data.get(position).getSubText());
-            holder.item.showRedDot(data.get(position).isNew());
             if (data.get(position).getImage()!=null)
                 holder.item.setImageDrawable(data.get(position).getImage(),52,52);
             else if (data.get(position).getPic()!=null)
                 holder.item.setImageDrawable(data.get(position).getPic(),64,52);
             else if (data.get(position).getIcon()!=0)
                 holder.item.setImageDrawable(data.get(position).getIcon(),36,36);
-            if (showCustomView) {
+            holder.item.setAccessoryType(ACCESSORY_TYPE);
+            if (ACCESSORY_TYPE==QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM) {
                 holder.initTextView();
                 holder.item.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
                 holder.item.addAccessoryCustomView(holder.getTextView());

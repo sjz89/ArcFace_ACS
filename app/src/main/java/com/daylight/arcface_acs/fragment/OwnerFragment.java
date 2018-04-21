@@ -154,7 +154,7 @@ public class OwnerFragment extends BaseFragment {
                     startFragment(new FacesFragment());
                     break;
                 case "通行记录":
-                    startFragment(new RecordFragment());
+                    startFragment(new PassRecordFragment());
                     break;
                 case "物业服务":
                     startFragment(new PropertyFragment());
